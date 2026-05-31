@@ -65,6 +65,17 @@ Direct links:
 Note: clicking `.html` files inside the GitHub repository file browser shows
 the HTML source code. Use the GitHub Pages links above to view rendered pages.
 
+## Public Example Data
+
+The small datasets used in the vignettes are included in the `data/` folder so
+that examples can be reproduced by users and learners.
+
+- [fullrep_MET_n1000.csv](https://brbasnet.github.io/mandalaR/data/fullrep_MET_n1000.csv): full-replicated MET example
+- [sparse_prep_MET_n1000.csv](https://brbasnet.github.io/mandalaR/data/sparse_prep_MET_n1000.csv): sparse/partially replicated MET example
+- [augmented_single_n200.csv](https://brbasnet.github.io/mandalaR/data/augmented_single_n200.csv): augmented single-site spatial example
+- [sim_GRM_1000.rds](https://brbasnet.github.io/mandalaR/data/sim_GRM_1000.rds): genomic relationship matrix
+- [Dataset notes](https://brbasnet.github.io/mandalaR/data/)
+
 ## Repository Scope
 
 This repository is intended for public documentation and communication. It may

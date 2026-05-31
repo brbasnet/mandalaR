@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Mandala Public Example Data</title>
+  <style>
+    body {
+      max-width: 920px;
+      margin: 0 auto;
+      padding: 42px 24px 64px;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: #1f2933;
+      line-height: 1.55;
+      background: #f8fafc;
+    }
+    h1 { margin-top: 0; font-size: 34px; }
+    p { color: #52606d; max-width: 760px; }
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      margin-top: 22px;
+      background: #ffffff;
+      border: 1px solid #d9e2ec;
+    }
+    th, td {
+      padding: 11px 12px;
+      border-bottom: 1px solid #d9e2ec;
+      text-align: left;
+      vertical-align: top;
+    }
+    th { background: #eef2f7; }
+    code {
+      background: #eef2f7;
+      padding: 2px 4px;
+      border-radius: 4px;
+    }
+    a { color: #0f766e; }
+  </style>
+</head>
+<body>
+  <h1>Public Example Data</h1>
+  <p>
+    These small datasets are used in the Mandala public vignettes. They are
+    provided so that readers can reproduce the examples without access to the
+    private development repository.
+  </p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>File</th>
+        <th>Records</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a href="fullrep_MET_n1000.csv"><code>fullrep_MET_n1000.csv</code></a></td>
+        <td>1000</td>
+        <td>Full-replicated multi-environment trial example with genotype, environment, replication, row-column layout, and trait columns.</td>
+      </tr>
+      <tr>
+        <td><a href="sparse_prep_MET_n1000.csv"><code>sparse_prep_MET_n1000.csv</code></a></td>
+        <td>1000</td>
+        <td>Sparse/partially replicated multi-environment trial example with incomplete genotype sharing across environments and row-column layout.</td>
+      </tr>
+      <tr>
+        <td><a href="augmented_single_n200.csv"><code>augmented_single_n200.csv</code></a></td>
+        <td>200</td>
+        <td>Single-site augmented/spatial field-trial example with row-column layout and trait columns.</td>
+      </tr>
+      <tr>
+        <td><a href="sim_GRM_1000.rds"><code>sim_GRM_1000.rds</code></a></td>
+        <td>1000 x 1000</td>
+        <td>Genomic relationship matrix for the public example genotype set.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2>Basic R Loading Pattern</h2>
+  <pre><code>df &lt;- read.csv("data/fullrep_MET_n1000.csv", stringsAsFactors = FALSE)
+
+for (v in c("geno", "env", "loc", "year", "rep", "block", "row", "col")) {
+  df[[v]] &lt;- factor(df[[v]])
+}
+
+df$yld &lt;- as.numeric(df$yld)</code></pre>
+
+  <p><a href="../index.html">Back to Mandala documentation home</a></p>
+</body>
+</html>
+
