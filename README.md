@@ -1,11 +1,50 @@
 # mandalaR
 
-Public-facing documentation for Mandala, an R mixed-model framework for plant
-breeding and quantitative genetics.
+Public-facing documentation for **Mandala**, an R mixed-model framework for
+plant breeding and quantitative genetics.
 
-This repository is intended for documentation, examples, rendered vignettes,
-benchmark summaries, and roadmap material. The private development source code
-for Mandala v2.0 is maintained separately.
+## About Mandala
+
+Mandala is being developed as a breeder-oriented statistical framework for
+analyzing plant breeding experiments. Its primary focus is mixed-model analysis
+of field trials, multi-environment trials, genomic prediction, spatial models,
+and prediction of genetic values from complex breeding data.
+
+Mandala is written for the R ecosystem with a deliberately small dependency
+footprint. The package aims to keep the user-facing workflow transparent and
+portable while using established mixed-model methodology, including REML,
+mixed-model equations, AI-REML updates, sparse matrix computation, and
+prediction from fitted linear mixed models.
+
+The goal is to provide practical R syntax for common breeding workflows while
+retaining access to modern variance structures and efficient sparse mixed-model
+computation.
+
+## Statistical Scope
+
+Mandala currently emphasizes:
+
+- single-site and multi-environment trial analysis
+- genotype BLUPs and genotype BLUEs
+- genomic relationship models and GBLUP
+- sparse and partially replicated MET designs
+- spatial row-column and residual covariance models
+- single-stage and two-stage analysis workflows
+- factor-analytic and other advanced variance structures
+
+Multivariate modeling is under development, but is not the main focus of the
+current public documentation.
+
+## Current Development Status
+
+Mandala v2.0 is an active development package. The current implementation
+includes an MME-based AI-REML engine, selected prediction standard errors for
+large models, selected fixed-effect tests, genomic prediction utilities, spatial
+diagnostics, and stage-wise analysis tools.
+
+The package is still being refined for public release. Documentation in this
+repository should therefore be viewed as a transparent development preview
+rather than a final CRAN release manual.
 
 ## Documentation
 
@@ -28,7 +67,8 @@ the HTML source code. Use the GitHub Pages links above to view rendered pages.
 
 ## Repository Scope
 
-This repository should include:
+This repository is intended for public documentation and communication. It may
+include:
 
 - rendered vignettes
 - public examples
@@ -37,12 +77,14 @@ This repository should include:
 - package-positioning material
 - roadmap notes
 
-This repository should not include:
+It should not include:
 
 - private Mandala source code
 - unreleased implementation scripts
 - private benchmark data
 - internal development archives
+
+The private development source code for Mandala v2.0 is maintained separately.
 
 ## Local Preview
 
