@@ -1,0 +1,1100 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+
+
+<title>Mandala with Advanced Variance Model Structures</title>
+
+<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
+// be compatible with the behavior of Pandoc < 2.8).
+document.addEventListener('DOMContentLoaded', function(e) {
+  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
+  var i, h, a;
+  for (i = 0; i < hs.length; i++) {
+    h = hs[i];
+    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
+    a = h.attributes;
+    while (a.length > 0) h.removeAttribute(a[0].name);
+  }
+});
+</script>
+
+<style type="text/css">
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+</style>
+
+
+
+<style type="text/css">
+code {
+white-space: pre;
+}
+.sourceCode {
+overflow: visible;
+}
+</style>
+<style type="text/css" data-origin="pandoc">
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+{ counter-reset: source-line 0; }
+pre.numberSource code > span
+{ position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+{ content: counter(source-line);
+position: relative; left: -1em; text-align: right; vertical-align: baseline;
+border: none; display: inline-block;
+-webkit-touch-callout: none; -webkit-user-select: none;
+-khtml-user-select: none; -moz-user-select: none;
+-ms-user-select: none; user-select: none;
+padding: 0 4px; width: 4em;
+color: #aaaaaa;
+}
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa; padding-left: 4px; }
+div.sourceCode
+{ }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } 
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.at { color: #7d9029; } 
+code span.bn { color: #40a070; } 
+code span.bu { color: #008000; } 
+code span.cf { color: #007020; font-weight: bold; } 
+code span.ch { color: #4070a0; } 
+code span.cn { color: #880000; } 
+code span.co { color: #60a0b0; font-style: italic; } 
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.do { color: #ba2121; font-style: italic; } 
+code span.dt { color: #902000; } 
+code span.dv { color: #40a070; } 
+code span.er { color: #ff0000; font-weight: bold; } 
+code span.ex { } 
+code span.fl { color: #40a070; } 
+code span.fu { color: #06287e; } 
+code span.im { color: #008000; font-weight: bold; } 
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.kw { color: #007020; font-weight: bold; } 
+code span.op { color: #666666; } 
+code span.ot { color: #007020; } 
+code span.pp { color: #bc7a00; } 
+code span.sc { color: #4070a0; } 
+code span.ss { color: #bb6688; } 
+code span.st { color: #4070a0; } 
+code span.va { color: #19177c; } 
+code span.vs { color: #4070a0; } 
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } 
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    var j = 0;
+    while (j < rules.length) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">Mandala with Advanced Variance Model
+Structures</h1>
+
+
+
+<p>This document shows a small set of representative advanced variance
+structures in Mandala. The goal is not to list every possible structure.
+Instead, the examples focus on model families that clarify how
+covariance structures change the biological interpretation of a mixed
+model.</p>
+<p>The genomic prediction, spatial-analysis, and stagewise-analysis
+vignettes cover <code>GM()</code>, <code>pspline2D()</code>, and
+<code>vcov(RMAT)</code> in more detail. The examples focus on:</p>
+<ul>
+<li>G-side versus R-side variance structures.</li>
+<li>Heterogeneous genetic variance across environments.</li>
+<li>Heterogeneous residual variance across environments.</li>
+<li>Compound-symmetry genotype-by-environment covariance.</li>
+<li>Compound-symmetry residual covariance for stage-two means.</li>
+<li>Factor-analytic genotype-by-environment covariance.</li>
+<li>Unstructured genotype-by-environment covariance.</li>
+<li>Nested environment-specific design effects.</li>
+</ul>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="fu">library</span>(mandala)</span></code></pre></div>
+<div id="g-side-and-r-side-structures" class="section level2">
+<h2>G-Side and R-Side Structures</h2>
+<p>The same statistical idea can often appear in two different places in
+a mixed model:</p>
+<table>
+<colgroup>
+<col width="33%" />
+<col width="33%" />
+<col width="33%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Location</th>
+<th>Example</th>
+<th>Interpretation</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>G side</td>
+<td><code>random = ~ geno:diag(env)</code></td>
+<td>genetic variance differs by environment</td>
+</tr>
+<tr class="even">
+<td>R side</td>
+<td><code>R_formula = ~ diag(env)</code></td>
+<td>residual/error variance differs by environment</td>
+</tr>
+<tr class="odd">
+<td>G side</td>
+<td><code>random = ~ geno:comsym(env)</code></td>
+<td>genotype-by-environment effects are equally correlated</td>
+</tr>
+<tr class="even">
+<td>R side</td>
+<td><code>R_formula = ~ comsym(env):id(geno)</code></td>
+<td>residual errors are equally correlated across environments within
+genotype</td>
+</tr>
+<tr class="odd">
+<td>G side</td>
+<td><code>random = ~ FA(geno, env, k = 1)</code></td>
+<td>genotype-by-environment covariance is factor analytic</td>
+</tr>
+</tbody>
+</table>
+<p>That distinction is important. A G-side structure describes
+covariance among random effects. An R-side structure describes
+covariance or heterogeneity in the residual errors.</p>
+</div>
+<div id="models-shown" class="section level2">
+<h2>Models Shown</h2>
+<p>The examples use the same fixed-effect part, <code>yld ~ env</code>,
+so that the variance structures are easy to compare.</p>
+<table>
+<colgroup>
+<col width="33%" />
+<col width="33%" />
+<col width="33%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Model</th>
+<th>Syntax Highlight</th>
+<th>Main Question</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Reference MET</td>
+<td><code>geno + geno:env</code></td>
+<td>What is the ordinary baseline model?</td>
+</tr>
+<tr class="even">
+<td>G-side diagonal</td>
+<td><code>geno + geno:diag(env)</code></td>
+<td>Does genetic variance differ by environment?</td>
+</tr>
+<tr class="odd">
+<td>R-side diagonal</td>
+<td><code>R_formula = ~ diag(env)</code></td>
+<td>Does residual noise differ by environment?</td>
+</tr>
+<tr class="even">
+<td>Compound symmetry</td>
+<td><code>geno + geno:comsym(env)</code></td>
+<td>Is one common GxE correlation adequate?</td>
+</tr>
+<tr class="odd">
+<td>R-side compound symmetry</td>
+<td><code>R_formula = ~ comsym(env):id(geno)</code></td>
+<td>Are stage-two residuals correlated across environments?</td>
+</tr>
+<tr class="even">
+<td>FA without genotype main effect</td>
+<td><code>FA(geno, env, k = 1)</code></td>
+<td>Can FA alone describe the genotype-environment signal?</td>
+</tr>
+<tr class="odd">
+<td>FA with genotype main effect</td>
+<td><code>geno + FA(geno, env, k = 1)</code></td>
+<td>What changes when a genotype main-effect term is included?</td>
+</tr>
+<tr class="even">
+<td>FA + GM</td>
+<td><code>FA(geno, env, k = 1) + GM(geno, GRM)</code></td>
+<td>Can FA GxE be combined with genomic main effects?</td>
+</tr>
+<tr class="odd">
+<td>Environment-specific spatial residuals</td>
+<td><code>R_formula = ~ by(env):ar1(row):ar1(col)</code></td>
+<td>Does each environment need its own row-column residual pattern?</td>
+</tr>
+<tr class="even">
+<td>Unstructured GxE</td>
+<td><code>geno + us(env):geno</code></td>
+<td>What does the most flexible GxE covariance look like?</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="data" class="section level2">
+<h2>Data</h2>
+<p>The examples use the small full-rep MET dataset shipped with Mandala.
+The dataset has genotypes tested across environments with replication
+and field layout factors.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a>path <span class="ot">&lt;-</span> <span class="fu">system.file</span>(<span class="st">&quot;extdata&quot;</span>, <span class="st">&quot;fullrep_MET_n1000.csv&quot;</span>,</span>
+<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a>                    <span class="at">package =</span> <span class="st">&quot;mandala&quot;</span>, <span class="at">mustWork =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a>met <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(path, <span class="at">stringsAsFactors =</span> <span class="cn">FALSE</span>, <span class="at">check.names =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb2-4"><a href="#cb2-4" tabindex="-1"></a></span>
+<span id="cb2-5"><a href="#cb2-5" tabindex="-1"></a><span class="cf">for</span> (v <span class="cf">in</span> <span class="fu">c</span>(<span class="st">&quot;geno&quot;</span>, <span class="st">&quot;env&quot;</span>, <span class="st">&quot;rep&quot;</span>, <span class="st">&quot;block&quot;</span>, <span class="st">&quot;row&quot;</span>, <span class="st">&quot;col&quot;</span>)) {</span>
+<span id="cb2-6"><a href="#cb2-6" tabindex="-1"></a>  met[[v]] <span class="ot">&lt;-</span> <span class="fu">factor</span>(met[[v]])</span>
+<span id="cb2-7"><a href="#cb2-7" tabindex="-1"></a>}</span>
+<span id="cb2-8"><a href="#cb2-8" tabindex="-1"></a></span>
+<span id="cb2-9"><a href="#cb2-9" tabindex="-1"></a>met<span class="sc">$</span>yld <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(met<span class="sc">$</span>yld)</span>
+<span id="cb2-10"><a href="#cb2-10" tabindex="-1"></a></span>
+<span id="cb2-11"><a href="#cb2-11" tabindex="-1"></a><span class="fu">data.frame</span>(</span>
+<span id="cb2-12"><a href="#cb2-12" tabindex="-1"></a>  <span class="at">n_obs =</span> <span class="fu">nrow</span>(met),</span>
+<span id="cb2-13"><a href="#cb2-13" tabindex="-1"></a>  <span class="at">n_geno =</span> <span class="fu">nlevels</span>(met<span class="sc">$</span>geno),</span>
+<span id="cb2-14"><a href="#cb2-14" tabindex="-1"></a>  <span class="at">n_env =</span> <span class="fu">nlevels</span>(met<span class="sc">$</span>env),</span>
+<span id="cb2-15"><a href="#cb2-15" tabindex="-1"></a>  <span class="at">n_rep =</span> <span class="fu">nlevels</span>(met<span class="sc">$</span>rep),</span>
+<span id="cb2-16"><a href="#cb2-16" tabindex="-1"></a>  <span class="at">n_block =</span> <span class="fu">nlevels</span>(met<span class="sc">$</span>block)</span>
+<span id="cb2-17"><a href="#cb2-17" tabindex="-1"></a>)</span>
+<span id="cb2-18"><a href="#cb2-18" tabindex="-1"></a><span class="co">#&gt;   n_obs n_geno n_env n_rep n_block</span></span>
+<span id="cb2-19"><a href="#cb2-19" tabindex="-1"></a><span class="co">#&gt; 1  1000     50    10     2       3</span></span></code></pre></div>
+<p>The FA+GM example uses a genomic relationship matrix.</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a>GRM <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(<span class="fu">system.file</span>(<span class="st">&quot;extdata&quot;</span>, <span class="st">&quot;sim_GRM_1000.rds&quot;</span>,</span>
+<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a>                           <span class="at">package =</span> <span class="st">&quot;mandala&quot;</span>, <span class="at">mustWork =</span> <span class="cn">TRUE</span>))</span></code></pre></div>
+<p>To keep this vignette fast, the examples below use a smaller balanced
+subset of the same dataset. The syntax is unchanged for the full
+dataset.</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a>demo_geno <span class="ot">&lt;-</span> <span class="fu">levels</span>(met<span class="sc">$</span>geno)[<span class="dv">1</span><span class="sc">:</span><span class="dv">20</span>]</span>
+<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a>demo_env <span class="ot">&lt;-</span> <span class="fu">levels</span>(met<span class="sc">$</span>env)[<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>]</span>
+<span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a></span>
+<span id="cb4-4"><a href="#cb4-4" tabindex="-1"></a>met_demo <span class="ot">&lt;-</span> <span class="fu">droplevels</span>(<span class="fu">subset</span>(met, geno <span class="sc">%in%</span> demo_geno <span class="sc">&amp;</span> env <span class="sc">%in%</span> demo_env))</span>
+<span id="cb4-5"><a href="#cb4-5" tabindex="-1"></a></span>
+<span id="cb4-6"><a href="#cb4-6" tabindex="-1"></a>G_list_demo <span class="ot">&lt;-</span> <span class="fu">mandala_grm_prep</span>(</span>
+<span id="cb4-7"><a href="#cb4-7" tabindex="-1"></a>  <span class="at">GRM =</span> GRM,</span>
+<span id="cb4-8"><a href="#cb4-8" tabindex="-1"></a>  <span class="at">data =</span> met_demo,</span>
+<span id="cb4-9"><a href="#cb4-9" tabindex="-1"></a>  <span class="at">geno_col =</span> <span class="st">&quot;geno&quot;</span>,</span>
+<span id="cb4-10"><a href="#cb4-10" tabindex="-1"></a>  <span class="at">GRM_label =</span> <span class="st">&quot;GRM&quot;</span>,</span>
+<span id="cb4-11"><a href="#cb4-11" tabindex="-1"></a>  <span class="at">verbose =</span> <span class="cn">FALSE</span></span>
+<span id="cb4-12"><a href="#cb4-12" tabindex="-1"></a>)</span>
+<span id="cb4-13"><a href="#cb4-13" tabindex="-1"></a></span>
+<span id="cb4-14"><a href="#cb4-14" tabindex="-1"></a><span class="fu">data.frame</span>(</span>
+<span id="cb4-15"><a href="#cb4-15" tabindex="-1"></a>  <span class="at">n_obs =</span> <span class="fu">nrow</span>(met_demo),</span>
+<span id="cb4-16"><a href="#cb4-16" tabindex="-1"></a>  <span class="at">n_geno =</span> <span class="fu">nlevels</span>(met_demo<span class="sc">$</span>geno),</span>
+<span id="cb4-17"><a href="#cb4-17" tabindex="-1"></a>  <span class="at">n_env =</span> <span class="fu">nlevels</span>(met_demo<span class="sc">$</span>env),</span>
+<span id="cb4-18"><a href="#cb4-18" tabindex="-1"></a>  <span class="at">n_rep =</span> <span class="fu">nlevels</span>(met_demo<span class="sc">$</span>rep),</span>
+<span id="cb4-19"><a href="#cb4-19" tabindex="-1"></a>  <span class="at">n_block =</span> <span class="fu">nlevels</span>(met_demo<span class="sc">$</span>block)</span>
+<span id="cb4-20"><a href="#cb4-20" tabindex="-1"></a>)</span>
+<span id="cb4-21"><a href="#cb4-21" tabindex="-1"></a><span class="co">#&gt;   n_obs n_geno n_env n_rep n_block</span></span>
+<span id="cb4-22"><a href="#cb4-22" tabindex="-1"></a><span class="co">#&gt; 1   200     20     5     2       3</span></span></code></pre></div>
+<p>For compact output, this helper keeps only the variance-component
+table.</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a>show_vc <span class="ot">&lt;-</span> <span class="cf">function</span>(fit, <span class="at">n =</span> <span class="dv">8</span>) {</span>
+<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a>  <span class="fu">head</span>(fit<span class="sc">$</span>varcomp, n)</span>
+<span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a>}</span></code></pre></div>
+</div>
+<div id="reference-model" class="section level2">
+<h2>Reference Model</h2>
+<p>Start with a familiar MET model. This is the baseline for the
+comparisons below. The baseline random-effect part is:</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a><span class="sc">~</span> geno <span class="sc">+</span> geno<span class="sc">:</span>env <span class="sc">+</span> env<span class="sc">:</span>rep<span class="sc">:</span>block</span></code></pre></div>
+<p>The advanced examples keep this design logic where possible. Some
+structures, such as <code>FA()</code> and <code>us()</code>, replace the
+ordinary <code>geno:env</code> term because they are alternative
+covariance models for the same genotype-by-environment effect.</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a>fit_ref <span class="ot">&lt;-</span> <span class="fu">mandala</span>(</span>
+<span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a>  <span class="at">fixed  =</span> yld <span class="sc">~</span> env,</span>
+<span id="cb7-3"><a href="#cb7-3" tabindex="-1"></a>  <span class="at">random =</span> <span class="sc">~</span> geno <span class="sc">+</span> geno<span class="sc">:</span>env <span class="sc">+</span> env<span class="sc">:</span>rep<span class="sc">:</span>block,</span>
+<span id="cb7-4"><a href="#cb7-4" tabindex="-1"></a>  <span class="at">data   =</span> met_demo,</span>
+<span id="cb7-5"><a href="#cb7-5" tabindex="-1"></a>  <span class="at">verbose =</span> <span class="cn">FALSE</span></span>
+<span id="cb7-6"><a href="#cb7-6" tabindex="-1"></a>)</span>
+<span id="cb7-7"><a href="#cb7-7" tabindex="-1"></a></span>
+<span id="cb7-8"><a href="#cb7-8" tabindex="-1"></a><span class="fu">summary</span>(fit_ref)</span>
+<span id="cb7-9"><a href="#cb7-9" tabindex="-1"></a><span class="co">#&gt; Model statement:</span></span>
+<span id="cb7-10"><a href="#cb7-10" tabindex="-1"></a><span class="co">#&gt; mandala(fixed = yld ~ env, random = ~geno + geno:env + env:rep:block, </span></span>
+<span id="cb7-11"><a href="#cb7-11" tabindex="-1"></a><span class="co">#&gt;     data = met_demo, verbose = FALSE)</span></span>
+<span id="cb7-12"><a href="#cb7-12" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb7-13"><a href="#cb7-13" tabindex="-1"></a><span class="co">#&gt; Variance Components:</span></span>
+<span id="cb7-14"><a href="#cb7-14" tabindex="-1"></a><span class="co">#&gt;      component  estimate  std.error  z.ratio bound %ch</span></span>
+<span id="cb7-15"><a href="#cb7-15" tabindex="-1"></a><span class="co">#&gt;           geno 0.4223813 0.16709007 2.527866     P  NA</span></span>
+<span id="cb7-16"><a href="#cb7-16" tabindex="-1"></a><span class="co">#&gt;       geno:env 0.1699904 0.08413409 2.020470     P  NA</span></span>
+<span id="cb7-17"><a href="#cb7-17" tabindex="-1"></a><span class="co">#&gt;  env:rep:block 0.1018692 0.05978506 1.703925     P  NA</span></span>
+<span id="cb7-18"><a href="#cb7-18" tabindex="-1"></a><span class="co">#&gt;       R.sigma2 0.5304641 0.08243951 6.434586     P  NA</span></span>
+<span id="cb7-19"><a href="#cb7-19" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb7-20"><a href="#cb7-20" tabindex="-1"></a><span class="co">#&gt; Fixed Effects (BLUEs) [first 5]:</span></span>
+<span id="cb7-21"><a href="#cb7-21" tabindex="-1"></a><span class="co">#&gt;       effect    estimate std.error     z.ratio</span></span>
+<span id="cb7-22"><a href="#cb7-22" tabindex="-1"></a><span class="co">#&gt;  (Intercept)  7.25704646 0.2481438 29.24532412</span></span>
+<span id="cb7-23"><a href="#cb7-23" tabindex="-1"></a><span class="co">#&gt;     envY1_L2 -0.01552629 0.2850537 -0.05446794</span></span>
+<span id="cb7-24"><a href="#cb7-24" tabindex="-1"></a><span class="co">#&gt;     envY1_L3 -0.72707803 0.2839072 -2.56097076</span></span>
+<span id="cb7-25"><a href="#cb7-25" tabindex="-1"></a><span class="co">#&gt;     envY1_L4 -0.93492962 0.2836142 -3.29648362</span></span>
+<span id="cb7-26"><a href="#cb7-26" tabindex="-1"></a><span class="co">#&gt;     envY1_L5 -0.26793694 0.2822549 -0.94927294</span></span>
+<span id="cb7-27"><a href="#cb7-27" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb7-28"><a href="#cb7-28" tabindex="-1"></a><span class="co">#&gt; Converged: TRUE  |  Iterations: 9</span></span>
+<span id="cb7-29"><a href="#cb7-29" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb7-30"><a href="#cb7-30" tabindex="-1"></a><span class="co">#&gt; Model Notes:</span></span>
+<span id="cb7-31"><a href="#cb7-31" tabindex="-1"></a><span class="co">#&gt; - Selected prediction SEs are available through mandala_predict().</span></span>
+<span id="cb7-32"><a href="#cb7-32" tabindex="-1"></a><span class="co">#&gt; - Selected fixed-effect tests are available with mandala_fixed_tests(type = &#39;selected&#39;).</span></span>
+<span id="cb7-33"><a href="#cb7-33" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb7-34"><a href="#cb7-34" tabindex="-1"></a><span class="co">#&gt; Random Effects (BLUPs) [first 5]:</span></span>
+<span id="cb7-35"><a href="#cb7-35" tabindex="-1"></a><span class="co">#&gt;  random level    estimate std.error    z.ratio</span></span>
+<span id="cb7-36"><a href="#cb7-36" tabindex="-1"></a><span class="co">#&gt;    geno    G1 -1.17596379 0.3028640 -3.8828111</span></span>
+<span id="cb7-37"><a href="#cb7-37" tabindex="-1"></a><span class="co">#&gt;    geno   G10 -0.12230449 0.3040986 -0.4021870</span></span>
+<span id="cb7-38"><a href="#cb7-38" tabindex="-1"></a><span class="co">#&gt;    geno   G11  1.11534227 0.3040685  3.6680623</span></span>
+<span id="cb7-39"><a href="#cb7-39" tabindex="-1"></a><span class="co">#&gt;    geno   G12 -0.05260894 0.3030515 -0.1735974</span></span>
+<span id="cb7-40"><a href="#cb7-40" tabindex="-1"></a><span class="co">#&gt;    geno   G13  0.72632632 0.3020293  2.4048208</span></span>
+<span id="cb7-41"><a href="#cb7-41" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb7-42"><a href="#cb7-42" tabindex="-1"></a><span class="co">#&gt; logLik: -272.866   AIC: 553.732   BIC: 566.824   logLik_Trunc: -93.673</span></span>
+<span id="cb7-43"><a href="#cb7-43" tabindex="-1"></a><span class="fu">mandala_fixed_tests</span>(fit_ref)</span>
+<span id="cb7-44"><a href="#cb7-44" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb7-45"><a href="#cb7-45" tabindex="-1"></a><span class="co">#&gt; Fixed-effect term tests</span></span>
+<span id="cb7-46"><a href="#cb7-46" tabindex="-1"></a><span class="co">#&gt; -----------------------</span></span>
+<span id="cb7-47"><a href="#cb7-47" tabindex="-1"></a><span class="co">#&gt; Method: incremental_gls </span></span>
+<span id="cb7-48"><a href="#cb7-48" tabindex="-1"></a><span class="co">#&gt; Denominator df: satterthwaite </span></span>
+<span id="cb7-49"><a href="#cb7-49" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb7-50"><a href="#cb7-50" tabindex="-1"></a><span class="co">#&gt;             Df    denDF       F.inc       Wald           Pr status</span></span>
+<span id="cb7-51"><a href="#cb7-51" tabindex="-1"></a><span class="co">#&gt; (Intercept)  1 26.94936 1617.748590 1617.74859 1.337913e-25     ok</span></span>
+<span id="cb7-52"><a href="#cb7-52" tabindex="-1"></a><span class="co">#&gt; env          4 24.46478    4.457298   17.82919 7.607607e-03     ok</span></span>
+<span id="cb7-53"><a href="#cb7-53" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb7-54"><a href="#cb7-54" tabindex="-1"></a><span class="co">#&gt; Note:</span></span>
+<span id="cb7-55"><a href="#cb7-55" tabindex="-1"></a><span class="co">#&gt; - Sequential GLS Wald tests using fitted full-model variance components.</span></span>
+<span id="cb7-56"><a href="#cb7-56" tabindex="-1"></a><span class="co">#&gt; - Denominator df use a Satterthwaite approximation.</span></span>
+<span id="cb7-57"><a href="#cb7-57" tabindex="-1"></a><span class="co">#&gt; - For classical split-plot or known-stratum designs, consider denDF = &#39;containment&#39; or denDF = &#39;stratum&#39;.</span></span>
+<span id="cb7-58"><a href="#cb7-58" tabindex="-1"></a><span class="fu">head</span>(<span class="fu">mandala_predict</span>(fit_ref, <span class="st">&quot;geno&quot;</span>, <span class="at">verbose =</span> <span class="cn">FALSE</span>))</span>
+<span id="cb7-59"><a href="#cb7-59" tabindex="-1"></a><span class="co">#&gt;   geno predicted_value std_error</span></span>
+<span id="cb7-60"><a href="#cb7-60" tabindex="-1"></a><span class="co">#&gt; 1   G1        5.597333 0.2326623</span></span>
+<span id="cb7-61"><a href="#cb7-61" tabindex="-1"></a><span class="co">#&gt; 2  G10        6.735803 0.2328194</span></span>
+<span id="cb7-62"><a href="#cb7-62" tabindex="-1"></a><span class="co">#&gt; 3  G11        8.073070 0.2328310</span></span>
+<span id="cb7-63"><a href="#cb7-63" tabindex="-1"></a><span class="co">#&gt; 4  G12        6.811109 0.2325921</span></span>
+<span id="cb7-64"><a href="#cb7-64" tabindex="-1"></a><span class="co">#&gt; 5  G13        7.652742 0.2323349</span></span>
+<span id="cb7-65"><a href="#cb7-65" tabindex="-1"></a><span class="co">#&gt; 6  G14        6.694200 0.2326769</span></span></code></pre></div>
+</div>
+<div id="g-side-diagonal-heterogeneous-genetic-variance" class="section level2">
+<h2>G-Side Diagonal: Heterogeneous Genetic Variance</h2>
+<p>The model below allows the genetic variance to differ by environment.
+This is a G-side model because the heterogeneity belongs to the random
+genotype effects. The genotype main-effect term is retained.</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a>fit_g_diag <span class="ot">&lt;-</span> <span class="fu">mandala</span>(</span>
+<span id="cb8-2"><a href="#cb8-2" tabindex="-1"></a>  <span class="at">fixed  =</span> yld <span class="sc">~</span> env,</span>
+<span id="cb8-3"><a href="#cb8-3" tabindex="-1"></a>  <span class="at">random =</span> <span class="sc">~</span> geno <span class="sc">+</span> geno<span class="sc">:</span><span class="fu">diag</span>(env) <span class="sc">+</span> env<span class="sc">:</span>rep<span class="sc">:</span>block,</span>
+<span id="cb8-4"><a href="#cb8-4" tabindex="-1"></a>  <span class="at">data   =</span> met_demo,</span>
+<span id="cb8-5"><a href="#cb8-5" tabindex="-1"></a>  <span class="at">verbose =</span> <span class="cn">FALSE</span></span>
+<span id="cb8-6"><a href="#cb8-6" tabindex="-1"></a>)</span>
+<span id="cb8-7"><a href="#cb8-7" tabindex="-1"></a></span>
+<span id="cb8-8"><a href="#cb8-8" tabindex="-1"></a><span class="fu">show_vc</span>(fit_g_diag, <span class="at">n =</span> <span class="dv">12</span>)</span>
+<span id="cb8-9"><a href="#cb8-9" tabindex="-1"></a><span class="co">#&gt;             component     estimate  std.error      z.ratio bound %ch</span></span>
+<span id="cb8-10"><a href="#cb8-10" tabindex="-1"></a><span class="co">#&gt; 1                geno 4.309310e-01 0.16811978 2.5632377308     P  NA</span></span>
+<span id="cb8-11"><a href="#cb8-11" tabindex="-1"></a><span class="co">#&gt; 2 geno_diag_env_Y1_L1 2.010610e-01 0.18849733 1.0666516470     P  NA</span></span>
+<span id="cb8-12"><a href="#cb8-12" tabindex="-1"></a><span class="co">#&gt; 3 geno_diag_env_Y1_L2 1.338838e-01 0.16796812 0.7970786249     P  NA</span></span>
+<span id="cb8-13"><a href="#cb8-13" tabindex="-1"></a><span class="co">#&gt; 4 geno_diag_env_Y1_L3 2.131463e-01 0.19232421 1.1082656368     P  NA</span></span>
+<span id="cb8-14"><a href="#cb8-14" tabindex="-1"></a><span class="co">#&gt; 5 geno_diag_env_Y1_L4 3.402035e-05 0.12935240 0.0002630052     P  NA</span></span>
+<span id="cb8-15"><a href="#cb8-15" tabindex="-1"></a><span class="co">#&gt; 6 geno_diag_env_Y1_L5 3.107569e-01 0.22303197 1.3933291577     P  NA</span></span>
+<span id="cb8-16"><a href="#cb8-16" tabindex="-1"></a><span class="co">#&gt; 7       env:rep:block 1.039429e-01 0.05999971 1.7323898126     P  NA</span></span>
+<span id="cb8-17"><a href="#cb8-17" tabindex="-1"></a><span class="co">#&gt; 8            R.sigma2 5.286062e-01 0.08212263 6.4367909209     P  NA</span></span></code></pre></div>
+<p>Use this when the question is:</p>
+<blockquote>
+<p>Do genotypes express different amounts of genetic variation in
+different environments?</p>
+</blockquote>
+</div>
+<div id="r-side-diagonal-heterogeneous-residual-variance" class="section level2">
+<h2>R-Side Diagonal: Heterogeneous Residual Variance</h2>
+<p>Now keep the ordinary genotype and genotype-by-environment random
+effects, but allow the residual variance to differ by environment.</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" tabindex="-1"></a>fit_r_diag <span class="ot">&lt;-</span> <span class="fu">mandala</span>(</span>
+<span id="cb9-2"><a href="#cb9-2" tabindex="-1"></a>  <span class="at">fixed  =</span> yld <span class="sc">~</span> env,</span>
+<span id="cb9-3"><a href="#cb9-3" tabindex="-1"></a>  <span class="at">random =</span> <span class="sc">~</span> geno <span class="sc">+</span> geno<span class="sc">:</span>env <span class="sc">+</span> env<span class="sc">:</span>rep<span class="sc">:</span>block,</span>
+<span id="cb9-4"><a href="#cb9-4" tabindex="-1"></a>  <span class="at">R_formula =</span> <span class="sc">~</span> <span class="fu">diag</span>(env),</span>
+<span id="cb9-5"><a href="#cb9-5" tabindex="-1"></a>  <span class="at">data   =</span> met_demo,</span>
+<span id="cb9-6"><a href="#cb9-6" tabindex="-1"></a>  <span class="at">verbose =</span> <span class="cn">FALSE</span></span>
+<span id="cb9-7"><a href="#cb9-7" tabindex="-1"></a>)</span>
+<span id="cb9-8"><a href="#cb9-8" tabindex="-1"></a></span>
+<span id="cb9-9"><a href="#cb9-9" tabindex="-1"></a><span class="fu">show_vc</span>(fit_r_diag, <span class="at">n =</span> <span class="dv">14</span>)</span>
+<span id="cb9-10"><a href="#cb9-10" tabindex="-1"></a><span class="co">#&gt;         component  estimate  std.error  z.ratio bound %ch</span></span>
+<span id="cb9-11"><a href="#cb9-11" tabindex="-1"></a><span class="co">#&gt; 1            geno 0.4231353 0.16676978 2.537242     P  NA</span></span>
+<span id="cb9-12"><a href="#cb9-12" tabindex="-1"></a><span class="co">#&gt; 2        geno:env 0.1624235 0.08296627 1.957705     P  NA</span></span>
+<span id="cb9-13"><a href="#cb9-13" tabindex="-1"></a><span class="co">#&gt; 3   env:rep:block 0.1084528 0.06311124 1.718439     P  NA</span></span>
+<span id="cb9-14"><a href="#cb9-14" tabindex="-1"></a><span class="co">#&gt; 4 R.var.env.Y1_L1 0.6437743 0.19120299 3.366968     P  NA</span></span>
+<span id="cb9-15"><a href="#cb9-15" tabindex="-1"></a><span class="co">#&gt; 5 R.var.env.Y1_L2 0.4766374 0.14946400 3.188978     P  NA</span></span>
+<span id="cb9-16"><a href="#cb9-16" tabindex="-1"></a><span class="co">#&gt; 6 R.var.env.Y1_L3 0.4835264 0.15699128 3.079957     P  NA</span></span>
+<span id="cb9-17"><a href="#cb9-17" tabindex="-1"></a><span class="co">#&gt; 7 R.var.env.Y1_L4 0.4673979 0.14316156 3.264828     P  NA</span></span>
+<span id="cb9-18"><a href="#cb9-18" tabindex="-1"></a><span class="co">#&gt; 8 R.var.env.Y1_L5 0.5913868 0.19153861 3.087559     P  NA</span></span></code></pre></div>
+<p>Use this when the question is:</p>
+<blockquote>
+<p>Are some environments noisier or less precise than others?</p>
+</blockquote>
+<p>The syntax is similar to the previous model, but the meaning is
+different:</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" tabindex="-1"></a>random    <span class="ot">=</span> <span class="er">~</span> geno<span class="sc">:</span><span class="fu">diag</span>(env)  <span class="co"># G-side genetic heterogeneity</span></span>
+<span id="cb10-2"><a href="#cb10-2" tabindex="-1"></a>R_formula <span class="ot">=</span> <span class="er">~</span> <span class="fu">diag</span>(env)       <span class="co"># R-side residual heterogeneity</span></span></code></pre></div>
+</div>
+<div id="r-side-compound-symmetry" class="section level2">
+<h2>R-Side Compound Symmetry</h2>
+<p>R-side compound symmetry is most useful for stage-two means or other
+data with one residual row per unit-by-environment cell. In the example
+below, genotype-environment means are formed from the demonstration
+data, then residuals for the same genotype are allowed to be correlated
+across environments.</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" tabindex="-1"></a>met_means <span class="ot">&lt;-</span> <span class="fu">aggregate</span>(yld <span class="sc">~</span> geno <span class="sc">+</span> env, <span class="at">data =</span> met_demo, <span class="at">FUN =</span> mean)</span>
+<span id="cb11-2"><a href="#cb11-2" tabindex="-1"></a>met_means<span class="sc">$</span>geno <span class="ot">&lt;-</span> <span class="fu">factor</span>(met_means<span class="sc">$</span>geno)</span>
+<span id="cb11-3"><a href="#cb11-3" tabindex="-1"></a>met_means<span class="sc">$</span>env <span class="ot">&lt;-</span> <span class="fu">factor</span>(met_means<span class="sc">$</span>env)</span>
+<span id="cb11-4"><a href="#cb11-4" tabindex="-1"></a></span>
+<span id="cb11-5"><a href="#cb11-5" tabindex="-1"></a>fit_r_cs <span class="ot">&lt;-</span> <span class="fu">mandala</span>(</span>
+<span id="cb11-6"><a href="#cb11-6" tabindex="-1"></a>  <span class="at">fixed  =</span> yld <span class="sc">~</span> env,</span>
+<span id="cb11-7"><a href="#cb11-7" tabindex="-1"></a>  <span class="at">random =</span> <span class="sc">~</span> geno,</span>
+<span id="cb11-8"><a href="#cb11-8" tabindex="-1"></a>  <span class="at">R_formula =</span> <span class="sc">~</span> <span class="fu">comsym</span>(env)<span class="sc">:</span><span class="fu">id</span>(geno),</span>
+<span id="cb11-9"><a href="#cb11-9" tabindex="-1"></a>  <span class="at">data   =</span> met_means,</span>
+<span id="cb11-10"><a href="#cb11-10" tabindex="-1"></a>  <span class="at">verbose =</span> <span class="cn">FALSE</span></span>
+<span id="cb11-11"><a href="#cb11-11" tabindex="-1"></a>)</span>
+<span id="cb11-12"><a href="#cb11-12" tabindex="-1"></a></span>
+<span id="cb11-13"><a href="#cb11-13" tabindex="-1"></a><span class="fu">show_vc</span>(fit_r_cs)</span>
+<span id="cb11-14"><a href="#cb11-14" tabindex="-1"></a><span class="co">#&gt;                     component  estimate std.error     z.ratio bound %ch</span></span>
+<span id="cb11-15"><a href="#cb11-15" tabindex="-1"></a><span class="co">#&gt; 1                        geno 0.3292411  43.58565 0.007553888     P  NA</span></span>
+<span id="cb11-16"><a href="#cb11-16" tabindex="-1"></a><span class="co">#&gt; 2 R.comsym.sigma2.env.by.geno 0.5473485  43.58554 0.012558031     P  NA</span></span>
+<span id="cb11-17"><a href="#cb11-17" tabindex="-1"></a><span class="co">#&gt; 3    R.comsym.rho.env.by.geno 0.1312822  71.29087 0.001841501     P  NA</span></span></code></pre></div>
+<p>The alias <code>corrv()</code> is also accepted on the R side:</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" tabindex="-1"></a>fit_r_cs2 <span class="ot">&lt;-</span> <span class="fu">mandala</span>(</span>
+<span id="cb12-2"><a href="#cb12-2" tabindex="-1"></a>  <span class="at">fixed  =</span> yld <span class="sc">~</span> env,</span>
+<span id="cb12-3"><a href="#cb12-3" tabindex="-1"></a>  <span class="at">random =</span> <span class="sc">~</span> geno,</span>
+<span id="cb12-4"><a href="#cb12-4" tabindex="-1"></a>  <span class="at">R_formula =</span> <span class="sc">~</span> <span class="fu">corrv</span>(env)<span class="sc">:</span><span class="fu">id</span>(geno),</span>
+<span id="cb12-5"><a href="#cb12-5" tabindex="-1"></a>  <span class="at">data   =</span> met_means,</span>
+<span id="cb12-6"><a href="#cb12-6" tabindex="-1"></a>  <span class="at">verbose =</span> <span class="cn">FALSE</span></span>
+<span id="cb12-7"><a href="#cb12-7" tabindex="-1"></a>)</span></code></pre></div>
+</div>
+<div id="compound-symmetry-gxe" class="section level2">
+<h2>Compound-Symmetry GxE</h2>
+<p>Compound symmetry is a simple correlated GxE structure. It assumes
+equal variance across environments and one common correlation among
+environment effects.</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" tabindex="-1"></a>fit_cs <span class="ot">&lt;-</span> <span class="fu">mandala</span>(</span>
+<span id="cb13-2"><a href="#cb13-2" tabindex="-1"></a>  <span class="at">fixed  =</span> yld <span class="sc">~</span> env,</span>
+<span id="cb13-3"><a href="#cb13-3" tabindex="-1"></a>  <span class="at">random =</span> <span class="sc">~</span> geno <span class="sc">+</span> geno<span class="sc">:</span><span class="fu">comsym</span>(env) <span class="sc">+</span> env<span class="sc">:</span>rep<span class="sc">:</span>block,</span>
+<span id="cb13-4"><a href="#cb13-4" tabindex="-1"></a>  <span class="at">data   =</span> met_demo,</span>
+<span id="cb13-5"><a href="#cb13-5" tabindex="-1"></a>  <span class="at">verbose =</span> <span class="cn">FALSE</span></span>
+<span id="cb13-6"><a href="#cb13-6" tabindex="-1"></a>)</span>
+<span id="cb13-7"><a href="#cb13-7" tabindex="-1"></a></span>
+<span id="cb13-8"><a href="#cb13-8" tabindex="-1"></a><span class="fu">show_vc</span>(fit_cs)</span>
+<span id="cb13-9"><a href="#cb13-9" tabindex="-1"></a><span class="co">#&gt;                     component   estimate  std.error   z.ratio bound %ch</span></span>
+<span id="cb13-10"><a href="#cb13-10" tabindex="-1"></a><span class="co">#&gt; 1                        geno  0.4132874 0.16366440  2.525212     P  NA</span></span>
+<span id="cb13-11"><a href="#cb13-11" tabindex="-1"></a><span class="co">#&gt; 2 G.comsym.sigma2.env.by.geno  0.1582592 0.08262142  1.915474     P  NA</span></span>
+<span id="cb13-12"><a href="#cb13-12" tabindex="-1"></a><span class="co">#&gt; 3    G.comsym.rho.env.by.geno -0.2499990 0.24633787 -1.014862     B  NA</span></span>
+<span id="cb13-13"><a href="#cb13-13" tabindex="-1"></a><span class="co">#&gt; 4               env:rep:block  0.1063228 0.06072490  1.750892     P  NA</span></span>
+<span id="cb13-14"><a href="#cb13-14" tabindex="-1"></a><span class="co">#&gt; 5                    R.sigma2  0.5293953 0.08227490  6.434469     P  NA</span></span></code></pre></div>
+<p>The alias <code>corrv()</code> is also available:</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" tabindex="-1"></a>fit_cs2 <span class="ot">&lt;-</span> <span class="fu">mandala</span>(</span>
+<span id="cb14-2"><a href="#cb14-2" tabindex="-1"></a>  <span class="at">fixed  =</span> yld <span class="sc">~</span> env,</span>
+<span id="cb14-3"><a href="#cb14-3" tabindex="-1"></a>  <span class="at">random =</span> <span class="sc">~</span> geno <span class="sc">+</span> geno<span class="sc">:</span><span class="fu">corrv</span>(env) <span class="sc">+</span> env<span class="sc">:</span>rep<span class="sc">:</span>block,</span>
+<span id="cb14-4"><a href="#cb14-4" tabindex="-1"></a>  <span class="at">data   =</span> met_demo,</span>
+<span id="cb14-5"><a href="#cb14-5" tabindex="-1"></a>  <span class="at">verbose =</span> <span class="cn">FALSE</span></span>
+<span id="cb14-6"><a href="#cb14-6" tabindex="-1"></a>)</span></code></pre></div>
+<p>Use compound symmetry when the covariance pattern should be simple
+and interpretable: one variance and one correlation.</p>
+</div>
+<div id="factor-analytic-gxe" class="section level2">
+<h2>Factor-Analytic GxE</h2>
+<p>Factor-analytic models are more flexible than compound symmetry. They
+model the genotype-by-environment covariance using latent factors.</p>
+<p>First fit FA without a separate genotype main-effect term.</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" tabindex="-1"></a>fit_fa1_no_geno <span class="ot">&lt;-</span> <span class="fu">mandala</span>(</span>
+<span id="cb15-2"><a href="#cb15-2" tabindex="-1"></a>  <span class="at">fixed  =</span> yld <span class="sc">~</span> env,</span>
+<span id="cb15-3"><a href="#cb15-3" tabindex="-1"></a>  <span class="at">random =</span> <span class="sc">~</span> <span class="fu">FA</span>(geno, env, <span class="at">k =</span> <span class="dv">1</span>) <span class="sc">+</span> env<span class="sc">:</span>rep<span class="sc">:</span>block,</span>
+<span id="cb15-4"><a href="#cb15-4" tabindex="-1"></a>  <span class="at">data   =</span> met_demo,</span>
+<span id="cb15-5"><a href="#cb15-5" tabindex="-1"></a>  <span class="at">mme_trace_mode =</span> <span class="st">&quot;adaptive&quot;</span>,</span>
+<span id="cb15-6"><a href="#cb15-6" tabindex="-1"></a>  <span class="at">verbose =</span> <span class="cn">FALSE</span></span>
+<span id="cb15-7"><a href="#cb15-7" tabindex="-1"></a>)</span>
+<span id="cb15-8"><a href="#cb15-8" tabindex="-1"></a></span>
+<span id="cb15-9"><a href="#cb15-9" tabindex="-1"></a>fit_fa1_no_geno<span class="sc">$</span>varcomp</span>
+<span id="cb15-10"><a href="#cb15-10" tabindex="-1"></a><span class="co">#&gt;             component     estimate  std.error  z.ratio bound %ch</span></span>
+<span id="cb15-11"><a href="#cb15-11" tabindex="-1"></a><span class="co">#&gt; 1  FA_lambda_Y1_L1_F1 8.649485e-01         NA       NA     P  NA</span></span>
+<span id="cb15-12"><a href="#cb15-12" tabindex="-1"></a><span class="co">#&gt; 2  FA_lambda_Y1_L2_F1 8.798488e-01         NA       NA     P  NA</span></span>
+<span id="cb15-13"><a href="#cb15-13" tabindex="-1"></a><span class="co">#&gt; 3  FA_lambda_Y1_L3_F1 6.234405e-01         NA       NA     P  NA</span></span>
+<span id="cb15-14"><a href="#cb15-14" tabindex="-1"></a><span class="co">#&gt; 4  FA_lambda_Y1_L4_F1 5.568106e-01         NA       NA     P  NA</span></span>
+<span id="cb15-15"><a href="#cb15-15" tabindex="-1"></a><span class="co">#&gt; 5  FA_lambda_Y1_L5_F1 3.641782e-01         NA       NA     P  NA</span></span>
+<span id="cb15-16"><a href="#cb15-16" tabindex="-1"></a><span class="co">#&gt; 6        FA_psi_Y1_L1 8.881221e-02         NA       NA     P  NA</span></span>
+<span id="cb15-17"><a href="#cb15-17" tabindex="-1"></a><span class="co">#&gt; 7        FA_psi_Y1_L2 2.721628e-05         NA       NA     P  NA</span></span>
+<span id="cb15-18"><a href="#cb15-18" tabindex="-1"></a><span class="co">#&gt; 8        FA_psi_Y1_L3 2.110495e-01         NA       NA     P  NA</span></span>
+<span id="cb15-19"><a href="#cb15-19" tabindex="-1"></a><span class="co">#&gt; 9        FA_psi_Y1_L4 3.664743e-02         NA       NA     P  NA</span></span>
+<span id="cb15-20"><a href="#cb15-20" tabindex="-1"></a><span class="co">#&gt; 10       FA_psi_Y1_L5 3.116913e-01         NA       NA     P  NA</span></span>
+<span id="cb15-21"><a href="#cb15-21" tabindex="-1"></a><span class="co">#&gt; 12      env:rep:block 1.035645e-01 0.05909276 1.752575     P  NA</span></span>
+<span id="cb15-22"><a href="#cb15-22" tabindex="-1"></a><span class="co">#&gt; 13           R.sigma2 5.278975e-01 0.06835186 7.723235     P  NA</span></span></code></pre></div>
+<p>Now include the genotype main-effect term explicitly.</p>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" tabindex="-1"></a>fit_fa1 <span class="ot">&lt;-</span> <span class="fu">mandala</span>(</span>
+<span id="cb16-2"><a href="#cb16-2" tabindex="-1"></a>  <span class="at">fixed  =</span> yld <span class="sc">~</span> env,</span>
+<span id="cb16-3"><a href="#cb16-3" tabindex="-1"></a>  <span class="at">random =</span> <span class="sc">~</span> geno <span class="sc">+</span> <span class="fu">FA</span>(geno, env, <span class="at">k =</span> <span class="dv">1</span>) <span class="sc">+</span> env<span class="sc">:</span>rep<span class="sc">:</span>block,</span>
+<span id="cb16-4"><a href="#cb16-4" tabindex="-1"></a>  <span class="at">data   =</span> met_demo,</span>
+<span id="cb16-5"><a href="#cb16-5" tabindex="-1"></a>  <span class="at">mme_trace_mode =</span> <span class="st">&quot;adaptive&quot;</span>,</span>
+<span id="cb16-6"><a href="#cb16-6" tabindex="-1"></a>  <span class="at">verbose =</span> <span class="cn">FALSE</span></span>
+<span id="cb16-7"><a href="#cb16-7" tabindex="-1"></a>)</span>
+<span id="cb16-8"><a href="#cb16-8" tabindex="-1"></a></span>
+<span id="cb16-9"><a href="#cb16-9" tabindex="-1"></a>fit_fa1<span class="sc">$</span>varcomp</span>
+<span id="cb16-10"><a href="#cb16-10" tabindex="-1"></a><span class="co">#&gt;             component  estimate  std.error  z.ratio bound %ch</span></span>
+<span id="cb16-11"><a href="#cb16-11" tabindex="-1"></a><span class="co">#&gt; 1                geno 1.1604153 0.63450707 1.828845     P  NA</span></span>
+<span id="cb16-12"><a href="#cb16-12" tabindex="-1"></a><span class="co">#&gt; 2  FA_lambda_Y1_L1_F1 0.1179992         NA       NA     P  NA</span></span>
+<span id="cb16-13"><a href="#cb16-13" tabindex="-1"></a><span class="co">#&gt; 3  FA_lambda_Y1_L2_F1 0.1238991         NA       NA     P  NA</span></span>
+<span id="cb16-14"><a href="#cb16-14" tabindex="-1"></a><span class="co">#&gt; 4  FA_lambda_Y1_L3_F1 0.1297991         NA       NA     P  NA</span></span>
+<span id="cb16-15"><a href="#cb16-15" tabindex="-1"></a><span class="co">#&gt; 5  FA_lambda_Y1_L4_F1 0.1356990         NA       NA     P  NA</span></span>
+<span id="cb16-16"><a href="#cb16-16" tabindex="-1"></a><span class="co">#&gt; 6  FA_lambda_Y1_L5_F1 0.1415990         NA       NA     P  NA</span></span>
+<span id="cb16-17"><a href="#cb16-17" tabindex="-1"></a><span class="co">#&gt; 7        FA_psi_Y1_L1 0.1524021         NA       NA     P  NA</span></span>
+<span id="cb16-18"><a href="#cb16-18" tabindex="-1"></a><span class="co">#&gt; 8        FA_psi_Y1_L2 0.1524021         NA       NA     P  NA</span></span>
+<span id="cb16-19"><a href="#cb16-19" tabindex="-1"></a><span class="co">#&gt; 9        FA_psi_Y1_L3 0.1892380         NA       NA     P  NA</span></span>
+<span id="cb16-20"><a href="#cb16-20" tabindex="-1"></a><span class="co">#&gt; 10       FA_psi_Y1_L4 0.1524021         NA       NA     P  NA</span></span>
+<span id="cb16-21"><a href="#cb16-21" tabindex="-1"></a><span class="co">#&gt; 11       FA_psi_Y1_L5 0.3257428         NA       NA     P  NA</span></span>
+<span id="cb16-22"><a href="#cb16-22" tabindex="-1"></a><span class="co">#&gt; 13      env:rep:block 0.1905026 0.10425039 1.827356     P  NA</span></span>
+<span id="cb16-23"><a href="#cb16-23" tabindex="-1"></a><span class="co">#&gt; 14           R.sigma2 0.5415233 0.07634461 7.093143     P  NA</span></span></code></pre></div>
+<p>A two-factor FA model can be useful when environment similarity is
+not well-described by a single latent axis.</p>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" tabindex="-1"></a>fit_fa2 <span class="ot">&lt;-</span> <span class="fu">mandala</span>(</span>
+<span id="cb17-2"><a href="#cb17-2" tabindex="-1"></a>  <span class="at">fixed  =</span> yld <span class="sc">~</span> env,</span>
+<span id="cb17-3"><a href="#cb17-3" tabindex="-1"></a>  <span class="at">random =</span> <span class="sc">~</span> geno <span class="sc">+</span> <span class="fu">FA</span>(geno, env, <span class="at">k =</span> <span class="dv">2</span>) <span class="sc">+</span> env<span class="sc">:</span>rep<span class="sc">:</span>block,</span>
+<span id="cb17-4"><a href="#cb17-4" tabindex="-1"></a>  <span class="at">data   =</span> met_demo,</span>
+<span id="cb17-5"><a href="#cb17-5" tabindex="-1"></a>  <span class="at">mme_trace_mode =</span> <span class="st">&quot;adaptive&quot;</span>,</span>
+<span id="cb17-6"><a href="#cb17-6" tabindex="-1"></a>  <span class="at">verbose =</span> <span class="cn">FALSE</span></span>
+<span id="cb17-7"><a href="#cb17-7" tabindex="-1"></a>)</span>
+<span id="cb17-8"><a href="#cb17-8" tabindex="-1"></a></span>
+<span id="cb17-9"><a href="#cb17-9" tabindex="-1"></a>fit_fa2<span class="sc">$</span>varcomp</span>
+<span id="cb17-10"><a href="#cb17-10" tabindex="-1"></a><span class="co">#&gt;             component  estimate  std.error  z.ratio bound %ch</span></span>
+<span id="cb17-11"><a href="#cb17-11" tabindex="-1"></a><span class="co">#&gt; 1                geno 0.9283322 0.52435228 1.770436     P  NA</span></span>
+<span id="cb17-12"><a href="#cb17-12" tabindex="-1"></a><span class="co">#&gt; 2  FA_lambda_Y1_L1_F1 0.1573322         NA       NA     P  NA</span></span>
+<span id="cb17-13"><a href="#cb17-13" tabindex="-1"></a><span class="co">#&gt; 3  FA_lambda_Y1_L2_F1 0.1612655         NA       NA     P  NA</span></span>
+<span id="cb17-14"><a href="#cb17-14" tabindex="-1"></a><span class="co">#&gt; 4  FA_lambda_Y1_L3_F1 0.1651988         NA       NA     P  NA</span></span>
+<span id="cb17-15"><a href="#cb17-15" tabindex="-1"></a><span class="co">#&gt; 5  FA_lambda_Y1_L4_F1 0.1691321         NA       NA     P  NA</span></span>
+<span id="cb17-16"><a href="#cb17-16" tabindex="-1"></a><span class="co">#&gt; 6  FA_lambda_Y1_L5_F1 0.1730654         NA       NA     P  NA</span></span>
+<span id="cb17-17"><a href="#cb17-17" tabindex="-1"></a><span class="co">#&gt; 7  FA_lambda_Y1_L2_F2 0.1769987         NA       NA     P  NA</span></span>
+<span id="cb17-18"><a href="#cb17-18" tabindex="-1"></a><span class="co">#&gt; 8  FA_lambda_Y1_L3_F2 0.1809321         NA       NA     P  NA</span></span>
+<span id="cb17-19"><a href="#cb17-19" tabindex="-1"></a><span class="co">#&gt; 9  FA_lambda_Y1_L4_F2 0.1848654         NA       NA     P  NA</span></span>
+<span id="cb17-20"><a href="#cb17-20" tabindex="-1"></a><span class="co">#&gt; 10 FA_lambda_Y1_L5_F2 0.1887987         NA       NA     P  NA</span></span>
+<span id="cb17-21"><a href="#cb17-21" tabindex="-1"></a><span class="co">#&gt; 11       FA_psi_Y1_L1 0.7426658         NA       NA     P  NA</span></span>
+<span id="cb17-22"><a href="#cb17-22" tabindex="-1"></a><span class="co">#&gt; 12       FA_psi_Y1_L2 0.2032027         NA       NA     P  NA</span></span>
+<span id="cb17-23"><a href="#cb17-23" tabindex="-1"></a><span class="co">#&gt; 13       FA_psi_Y1_L3 0.2032027         NA       NA     P  NA</span></span>
+<span id="cb17-24"><a href="#cb17-24" tabindex="-1"></a><span class="co">#&gt; 14       FA_psi_Y1_L4 0.2032027         NA       NA     P  NA</span></span>
+<span id="cb17-25"><a href="#cb17-25" tabindex="-1"></a><span class="co">#&gt; 15       FA_psi_Y1_L5 0.2032027         NA       NA     P  NA</span></span>
+<span id="cb17-26"><a href="#cb17-26" tabindex="-1"></a><span class="co">#&gt; 17      env:rep:block 0.2540034 0.13918755 1.824901     P  NA</span></span>
+<span id="cb17-27"><a href="#cb17-27" tabindex="-1"></a><span class="co">#&gt; 18           R.sigma2 0.5426559 0.07892638 6.875469     P  NA</span></span></code></pre></div>
+<p>FA tools can summarize the fitted environment covariance, environment
+correlation, and genotype scores.</p>
+<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" tabindex="-1"></a>fa <span class="ot">&lt;-</span> <span class="fu">mandala_fa_tools</span>(fit_fa2, <span class="at">geno =</span> <span class="st">&quot;geno&quot;</span>, <span class="at">env =</span> <span class="st">&quot;env&quot;</span>, <span class="at">rotate =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb18-2"><a href="#cb18-2" tabindex="-1"></a>fa<span class="sc">$</span>Lambda</span>
+<span id="cb18-3"><a href="#cb18-3" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb18-4"><a href="#cb18-4" tabindex="-1"></a><span class="co">#&gt; Loadings:</span></span>
+<span id="cb18-5"><a href="#cb18-5" tabindex="-1"></a><span class="co">#&gt;       F1    F2   </span></span>
+<span id="cb18-6"><a href="#cb18-6" tabindex="-1"></a><span class="co">#&gt; Y1_L1 0.157      </span></span>
+<span id="cb18-7"><a href="#cb18-7" tabindex="-1"></a><span class="co">#&gt; Y1_L2 0.160 0.178</span></span>
+<span id="cb18-8"><a href="#cb18-8" tabindex="-1"></a><span class="co">#&gt; Y1_L3 0.164 0.182</span></span>
+<span id="cb18-9"><a href="#cb18-9" tabindex="-1"></a><span class="co">#&gt; Y1_L4 0.168 0.186</span></span>
+<span id="cb18-10"><a href="#cb18-10" tabindex="-1"></a><span class="co">#&gt; Y1_L5 0.172 0.190</span></span>
+<span id="cb18-11"><a href="#cb18-11" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb18-12"><a href="#cb18-12" tabindex="-1"></a><span class="co">#&gt;                   F1    F2</span></span>
+<span id="cb18-13"><a href="#cb18-13" tabindex="-1"></a><span class="co">#&gt; SS loadings    0.135 0.135</span></span>
+<span id="cb18-14"><a href="#cb18-14" tabindex="-1"></a><span class="co">#&gt; Proportion Var 0.027 0.027</span></span>
+<span id="cb18-15"><a href="#cb18-15" tabindex="-1"></a><span class="co">#&gt; Cumulative Var 0.027 0.054</span></span>
+<span id="cb18-16"><a href="#cb18-16" tabindex="-1"></a>fa<span class="sc">$</span>VCOV</span>
+<span id="cb18-17"><a href="#cb18-17" tabindex="-1"></a><span class="co">#&gt;            Y1_L1      Y1_L2      Y1_L3      Y1_L4      Y1_L5</span></span>
+<span id="cb18-18"><a href="#cb18-18" tabindex="-1"></a><span class="co">#&gt; Y1_L1 0.76741922 0.02537226 0.02599110 0.02660994 0.02722877</span></span>
+<span id="cb18-19"><a href="#cb18-19" tabindex="-1"></a><span class="co">#&gt; Y1_L2 0.02537226 0.26053787 0.05866562 0.05999612 0.06132662</span></span>
+<span id="cb18-20"><a href="#cb18-20" tabindex="-1"></a><span class="co">#&gt; Y1_L3 0.02599110 0.05866562 0.26322981 0.06138850 0.06274994</span></span>
+<span id="cb18-21"><a href="#cb18-21" tabindex="-1"></a><span class="co">#&gt; Y1_L4 0.02660994 0.05999612 0.06138850 0.26598363 0.06417326</span></span>
+<span id="cb18-22"><a href="#cb18-22" tabindex="-1"></a><span class="co">#&gt; Y1_L5 0.02722877 0.06132662 0.06274994 0.06417326 0.26879933</span></span>
+<span id="cb18-23"><a href="#cb18-23" tabindex="-1"></a>fa<span class="sc">$</span>Cor</span>
+<span id="cb18-24"><a href="#cb18-24" tabindex="-1"></a><span class="co">#&gt;            Y1_L1      Y1_L2      Y1_L3      Y1_L4      Y1_L5</span></span>
+<span id="cb18-25"><a href="#cb18-25" tabindex="-1"></a><span class="co">#&gt; Y1_L1 1.00000000 0.05674237 0.05782835 0.05889793 0.05995116</span></span>
+<span id="cb18-26"><a href="#cb18-26" tabindex="-1"></a><span class="co">#&gt; Y1_L2 0.05674237 1.00000000 0.22401687 0.22790838 0.23173920</span></span>
+<span id="cb18-27"><a href="#cb18-27" tabindex="-1"></a><span class="co">#&gt; Y1_L3 0.05782835 0.22401687 1.00000000 0.23200217 0.23590204</span></span>
+<span id="cb18-28"><a href="#cb18-28" tabindex="-1"></a><span class="co">#&gt; Y1_L4 0.05889793 0.22790838 0.23200217 1.00000000 0.24000074</span></span>
+<span id="cb18-29"><a href="#cb18-29" tabindex="-1"></a><span class="co">#&gt; Y1_L5 0.05995116 0.23173920 0.23590204 0.24000074 1.00000000</span></span>
+<span id="cb18-30"><a href="#cb18-30" tabindex="-1"></a><span class="fu">head</span>(fa<span class="sc">$</span>geno_summary)</span>
+<span id="cb18-31"><a href="#cb18-31" tabindex="-1"></a><span class="co">#&gt;     geno genomic_main common_GE_mean total_GE_mean predicted_common_mean predicted_total_mean common_stability_rms specific_rms total_GE_rms        F1        F2</span></span>
+<span id="cb18-32"><a href="#cb18-32" tabindex="-1"></a><span class="co">#&gt; G16  G16            0     0.16799691    0.17111600              7.048659             7.051778           0.21586172    0.1894068    0.3337986  3.829695 -3.133306</span></span>
+<span id="cb18-33"><a href="#cb18-33" tabindex="-1"></a><span class="co">#&gt; G11  G11            0     0.15373549    0.15063826              7.034397             7.031300           0.08820925    0.1055959    0.2053496  2.105316 -1.305680</span></span>
+<span id="cb18-34"><a href="#cb18-34" tabindex="-1"></a><span class="co">#&gt; G25  G25            0     0.13963472    0.14371759              7.020296             7.024379           0.43504338    0.2267208    0.5116307  6.453839 -6.254532</span></span>
+<span id="cb18-35"><a href="#cb18-35" tabindex="-1"></a><span class="co">#&gt; G13  G13            0     0.13123754    0.13342662              7.011899             7.014088           0.22348260    0.1702730    0.3108904  3.693607 -3.231038</span></span>
+<span id="cb18-36"><a href="#cb18-36" tabindex="-1"></a><span class="co">#&gt; G15  G15            0     0.06449388    0.06642769              6.945156             6.947089           0.33747627    0.1812258    0.3891638  4.727800 -4.838450</span></span>
+<span id="cb18-37"><a href="#cb18-37" tabindex="-1"></a><span class="co">#&gt; G18  G18            0     0.02441086    0.02366545              6.905073             6.904327           0.25226783    0.1704133    0.3056384 -3.072262  3.594511</span></span>
+<span id="cb18-38"><a href="#cb18-38" tabindex="-1"></a><span class="co">#&gt;     rank_predicted_common rank_predicted_total</span></span>
+<span id="cb18-39"><a href="#cb18-39" tabindex="-1"></a><span class="co">#&gt; G16                     1                    1</span></span>
+<span id="cb18-40"><a href="#cb18-40" tabindex="-1"></a><span class="co">#&gt; G11                     2                    2</span></span>
+<span id="cb18-41"><a href="#cb18-41" tabindex="-1"></a><span class="co">#&gt; G25                     3                    3</span></span>
+<span id="cb18-42"><a href="#cb18-42" tabindex="-1"></a><span class="co">#&gt; G13                     4                    4</span></span>
+<span id="cb18-43"><a href="#cb18-43" tabindex="-1"></a><span class="co">#&gt; G15                     5                    5</span></span>
+<span id="cb18-44"><a href="#cb18-44" tabindex="-1"></a><span class="co">#&gt; G18                     6                    6</span></span></code></pre></div>
+<p>The fitted FA correlation matrix can also be used to cluster
+environments.</p>
+<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" tabindex="-1"></a><span class="fu">plot_mandala_fa_env_similarity</span>(</span>
+<span id="cb19-2"><a href="#cb19-2" tabindex="-1"></a>  fa,</span>
+<span id="cb19-3"><a href="#cb19-3" tabindex="-1"></a>  <span class="at">use =</span> <span class="st">&quot;correlation&quot;</span>,</span>
+<span id="cb19-4"><a href="#cb19-4" tabindex="-1"></a>  <span class="at">main =</span> <span class="st">&quot;FA environment clustering&quot;</span></span>
+<span id="cb19-5"><a href="#cb19-5" tabindex="-1"></a>)</span></code></pre></div>
+<p><img role="img" src="data:image/png;base64,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aIuPtvRqF/jHH38s3bp1MwHQ1KlTzR9A69atM2uEOZsjUkcAAS8LEAB5ufbIe5YKfP3112a9qbp162bpdbnYfwW0VUfHY2lL3ZYtW0Rb7rQ7fPPmzVKlShVzkg5o17XBtJtSgyU2BBBAIDUBz80CS60g7EfAaYFx48bJSy+95PRlSD+MgE560OBGV3nX9b+0K7JTp05y7bXX+oMffduVV14pt9xyi3z33XdhUmEXAggg8D8BAqD/WfAMAQRcKlC8eHEpWbKk6Dpg9qbrgenYrMBNB61ri5Cez+Y+gX//+9/ct9F91eLPkU4q0vGQa9euld9++82/P16fEADFa81SLgTiSECXudDBzg899JCMHTtW9D9q7erSxSrtTRey1BW99X5td955p72bny4S+OMf/2gWGXVRlhIyK99++620aNFCdNyjvelSHzrBqHLlynL99debPyKGDh1qJhrY58TbT0/OAou3SqA8CCAQWUDH/uiaX1OmTJGnnnoq5A39+vWTH3/80cza0xmhbFkvcPToURkyZEiqF960aZO5zYy95pYOXg9cdiLVN3IgUwUOHTokn376qWiLqW56g/HWrVub369hw4aZIGjevHmi3f56Z4XBgwdn6vXdkhgBkFtqgnwggECaAjr7S79cNdAJt+ltS6666iqzCKr+h166dOlwp7HPQQG9CbUOQNcvWB20nj9//qCrHT582Mzg03W1dGNGZRBPzF5onenMSu1i1nF0ut13330yZswYGT16tFlXT1th420jAIq3GqU86Rbo37+/6feO9EZtNm7YsGGk0zjusEDevHnDXkFngulftO3atTNfwvqTLWsFihQpItrKo12VOhD9L3/5S9DvjAY8Gpjqfjb3COjyHzfddJM/+LFzpl2WeksgbVnV7rF42wiA4q1GKU+6Bfbu3Ss7d+6M+D7tfrn88ssjnscJCCSywB/+8AdZsGCBTJo0SVq2bCm9e/c299bLlStXIrO4suza6qOtdNr99c4774TkUQdD61asWLGQY/GwgwAoHmqRMlyUQLhf/EgJ6m0XTpw4IYULF450KscRSEgBva1MkyZNzHIFn3zyicycOTMhHdxcaL1zgi4mqoOedZkJHWc3aNAgs6ioBrDPP/+8NG/ePG7/n4u/Tj03f9rIW9wIfP/998KCiHFTnRTEIYGrr75avvnmG9MSdOONN4p2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" /><!-- --></p>
+</div>
+<div id="fa-gm" class="section level2">
+<h2>FA + GM</h2>
+<p>FA can also be combined with a genomic main-effect term. In this
+model, <code>GM(geno, GRM)</code> is the genotype main-effect covariance
+and <code>FA(geno, env, k = 1)</code> models genotype-by-environment
+covariance.</p>
+<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" tabindex="-1"></a>fit_fa_gm <span class="ot">&lt;-</span> <span class="fu">mandala</span>(</span>
+<span id="cb20-2"><a href="#cb20-2" tabindex="-1"></a>  <span class="at">fixed  =</span> yld <span class="sc">~</span> env,</span>
+<span id="cb20-3"><a href="#cb20-3" tabindex="-1"></a>  <span class="at">random =</span> <span class="sc">~</span> <span class="fu">FA</span>(geno, env, <span class="at">k =</span> <span class="dv">1</span>) <span class="sc">+</span> <span class="fu">GM</span>(geno, GRM) <span class="sc">+</span> env<span class="sc">:</span>rep<span class="sc">:</span>block,</span>
+<span id="cb20-4"><a href="#cb20-4" tabindex="-1"></a>  <span class="at">data   =</span> met_demo,</span>
+<span id="cb20-5"><a href="#cb20-5" tabindex="-1"></a>  <span class="at">matrix_list =</span> G_list_demo,</span>
+<span id="cb20-6"><a href="#cb20-6" tabindex="-1"></a>  <span class="at">mme_trace_mode =</span> <span class="st">&quot;adaptive&quot;</span>,</span>
+<span id="cb20-7"><a href="#cb20-7" tabindex="-1"></a>  <span class="at">verbose =</span> <span class="cn">FALSE</span></span>
+<span id="cb20-8"><a href="#cb20-8" tabindex="-1"></a>)</span>
+<span id="cb20-9"><a href="#cb20-9" tabindex="-1"></a></span>
+<span id="cb20-10"><a href="#cb20-10" tabindex="-1"></a>fit_fa_gm<span class="sc">$</span>varcomp</span>
+<span id="cb20-11"><a href="#cb20-11" tabindex="-1"></a><span class="co">#&gt;             component   estimate  std.error  z.ratio bound %ch</span></span>
+<span id="cb20-12"><a href="#cb20-12" tabindex="-1"></a><span class="co">#&gt; 1  FA_lambda_Y1_L1_F1 0.54716741         NA       NA     P  NA</span></span>
+<span id="cb20-13"><a href="#cb20-13" tabindex="-1"></a><span class="co">#&gt; 2  FA_lambda_Y1_L2_F1 0.75874115         NA       NA     P  NA</span></span>
+<span id="cb20-14"><a href="#cb20-14" tabindex="-1"></a><span class="co">#&gt; 3  FA_lambda_Y1_L3_F1 0.51611237         NA       NA     P  NA</span></span>
+<span id="cb20-15"><a href="#cb20-15" tabindex="-1"></a><span class="co">#&gt; 4  FA_lambda_Y1_L4_F1 0.21264660         NA       NA     P  NA</span></span>
+<span id="cb20-16"><a href="#cb20-16" tabindex="-1"></a><span class="co">#&gt; 5  FA_lambda_Y1_L5_F1 0.07964944         NA       NA     P  NA</span></span>
+<span id="cb20-17"><a href="#cb20-17" tabindex="-1"></a><span class="co">#&gt; 6        FA_psi_Y1_L1 0.18117252         NA       NA     P  NA</span></span>
+<span id="cb20-18"><a href="#cb20-18" tabindex="-1"></a><span class="co">#&gt; 7        FA_psi_Y1_L2 0.08572616         NA       NA     P  NA</span></span>
+<span id="cb20-19"><a href="#cb20-19" tabindex="-1"></a><span class="co">#&gt; 8        FA_psi_Y1_L3 0.15771705         NA       NA     P  NA</span></span>
+<span id="cb20-20"><a href="#cb20-20" tabindex="-1"></a><span class="co">#&gt; 9        FA_psi_Y1_L4 0.08572616         NA       NA     P  NA</span></span>
+<span id="cb20-21"><a href="#cb20-21" tabindex="-1"></a><span class="co">#&gt; 10       FA_psi_Y1_L5 0.25323264         NA       NA     P  NA</span></span>
+<span id="cb20-22"><a href="#cb20-22" tabindex="-1"></a><span class="co">#&gt; 12       GM(geno,GRM) 0.31423112 0.20751684 1.514244     P  NA</span></span>
+<span id="cb20-23"><a href="#cb20-23" tabindex="-1"></a><span class="co">#&gt; 13      env:rep:block 0.10715770 0.06596431 1.624480     P  NA</span></span>
+<span id="cb20-24"><a href="#cb20-24" tabindex="-1"></a><span class="co">#&gt; 14           R.sigma2 0.54250971 0.07599147 7.139087     P  NA</span></span></code></pre></div>
+<p>In practice, avoid adding both <code>geno</code> and
+<code>GM(geno, GRM)</code> as competing genotype main-effect terms
+unless that comparison is intentional. <code>GM(geno, GRM)</code> is the
+genomic version of the genotype main-effect covariance.</p>
+</div>
+<div id="environment-specific-spatial-residuals" class="section level2">
+<h2>Environment-Specific Spatial Residuals</h2>
+<p>Spatial field trend is often most naturally represented on the
+residual side. The <code>by(env):ar1(row):ar1(col)</code> residual
+structure fits a separate row-column AR1 residual pattern within each
+environment, while keeping genotype and GxE on the G side.</p>
+<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" tabindex="-1"></a>fit_spatial_r <span class="ot">&lt;-</span> <span class="fu">mandala</span>(</span>
+<span id="cb21-2"><a href="#cb21-2" tabindex="-1"></a>  <span class="at">fixed  =</span> yld <span class="sc">~</span> env,</span>
+<span id="cb21-3"><a href="#cb21-3" tabindex="-1"></a>  <span class="at">random =</span> <span class="sc">~</span> geno <span class="sc">+</span> geno<span class="sc">:</span>env,</span>
+<span id="cb21-4"><a href="#cb21-4" tabindex="-1"></a>  <span class="at">R_formula =</span> <span class="sc">~</span> <span class="fu">by</span>(env)<span class="sc">:</span><span class="fu">ar1</span>(row)<span class="sc">:</span><span class="fu">ar1</span>(col),</span>
+<span id="cb21-5"><a href="#cb21-5" tabindex="-1"></a>  <span class="at">data   =</span> met_demo,</span>
+<span id="cb21-6"><a href="#cb21-6" tabindex="-1"></a>  <span class="at">verbose =</span> <span class="cn">FALSE</span></span>
+<span id="cb21-7"><a href="#cb21-7" tabindex="-1"></a>)</span>
+<span id="cb21-8"><a href="#cb21-8" tabindex="-1"></a></span>
+<span id="cb21-9"><a href="#cb21-9" tabindex="-1"></a><span class="fu">show_vc</span>(fit_spatial_r, <span class="at">n =</span> <span class="dv">12</span>)</span>
+<span id="cb21-10"><a href="#cb21-10" tabindex="-1"></a><span class="co">#&gt;              component   estimate std.error z.ratio bound %ch</span></span>
+<span id="cb21-11"><a href="#cb21-11" tabindex="-1"></a><span class="co">#&gt; 1                 geno  0.2990856        NA      NA     P  NA</span></span>
+<span id="cb21-12"><a href="#cb21-12" tabindex="-1"></a><span class="co">#&gt; 2             geno:env  0.8363919        NA      NA     P  NA</span></span>
+<span id="cb21-13"><a href="#cb21-13" tabindex="-1"></a><span class="co">#&gt; 3   R.sigma2.env.Y1_L1  4.6828767        NA      NA     P  NA</span></span>
+<span id="cb21-14"><a href="#cb21-14" tabindex="-1"></a><span class="co">#&gt; 4  R.rho.row.env.Y1_L1  0.9430000        NA      NA     P  NA</span></span>
+<span id="cb21-15"><a href="#cb21-15" tabindex="-1"></a><span class="co">#&gt; 5  R.rho.col.env.Y1_L1 -0.5430000        NA      NA     P  NA</span></span>
+<span id="cb21-16"><a href="#cb21-16" tabindex="-1"></a><span class="co">#&gt; 6   R.sigma2.env.Y1_L2  0.6617576        NA      NA     P  NA</span></span>
+<span id="cb21-17"><a href="#cb21-17" tabindex="-1"></a><span class="co">#&gt; 7  R.rho.row.env.Y1_L2 -0.4383962        NA      NA     P  NA</span></span>
+<span id="cb21-18"><a href="#cb21-18" tabindex="-1"></a><span class="co">#&gt; 8  R.rho.col.env.Y1_L2  0.4717172        NA      NA     P  NA</span></span>
+<span id="cb21-19"><a href="#cb21-19" tabindex="-1"></a><span class="co">#&gt; 9   R.sigma2.env.Y1_L3  1.2677645        NA      NA     P  NA</span></span>
+<span id="cb21-20"><a href="#cb21-20" tabindex="-1"></a><span class="co">#&gt; 10 R.rho.row.env.Y1_L3  0.2358411        NA      NA     P  NA</span></span>
+<span id="cb21-21"><a href="#cb21-21" tabindex="-1"></a><span class="co">#&gt; 11 R.rho.col.env.Y1_L3  0.3804420        NA      NA     P  NA</span></span>
+<span id="cb21-22"><a href="#cb21-22" tabindex="-1"></a><span class="co">#&gt; 12  R.sigma2.env.Y1_L4  0.7553618        NA      NA     P  NA</span></span></code></pre></div>
+<p>This type of residual structure is useful for environment-specific
+spatial patterns. It should be added only when the design or diagnostics
+suggest that independent residual variation is too simple.</p>
+</div>
+<div id="unstructured-gxe" class="section level2">
+<h2>Unstructured GxE</h2>
+<p>An unstructured covariance is the most flexible GxE model shown here.
+It estimates all environment variances and covariances for the
+genotype-by- environment effect.</p>
+<div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" tabindex="-1"></a>fit_us <span class="ot">&lt;-</span> <span class="fu">mandala</span>(</span>
+<span id="cb22-2"><a href="#cb22-2" tabindex="-1"></a>  <span class="at">fixed  =</span> yld <span class="sc">~</span> env,</span>
+<span id="cb22-3"><a href="#cb22-3" tabindex="-1"></a>  <span class="at">random =</span> <span class="sc">~</span> geno <span class="sc">+</span> <span class="fu">us</span>(env)<span class="sc">:</span>geno <span class="sc">+</span> env<span class="sc">:</span>rep<span class="sc">:</span>block,</span>
+<span id="cb22-4"><a href="#cb22-4" tabindex="-1"></a>  <span class="at">data   =</span> met_demo,</span>
+<span id="cb22-5"><a href="#cb22-5" tabindex="-1"></a>  <span class="at">verbose =</span> <span class="cn">FALSE</span></span>
+<span id="cb22-6"><a href="#cb22-6" tabindex="-1"></a>)</span>
+<span id="cb22-7"><a href="#cb22-7" tabindex="-1"></a></span>
+<span id="cb22-8"><a href="#cb22-8" tabindex="-1"></a><span class="fu">show_vc</span>(fit_us, <span class="at">n =</span> <span class="dv">12</span>)</span>
+<span id="cb22-9"><a href="#cb22-9" tabindex="-1"></a><span class="co">#&gt;                       component    estimate std.error    z.ratio bound %ch</span></span>
+<span id="cb22-10"><a href="#cb22-10" tabindex="-1"></a><span class="co">#&gt; 1                          geno  0.41656001 0.1719842  2.4220823     P  NA</span></span>
+<span id="cb22-11"><a href="#cb22-11" tabindex="-1"></a><span class="co">#&gt; 2  G.us.env.by.geno.Y1_L1.Y1_L1  0.10447875 0.1959643  0.5331520     P  NA</span></span>
+<span id="cb22-12"><a href="#cb22-12" tabindex="-1"></a><span class="co">#&gt; 3  G.us.env.by.geno.Y1_L2.Y1_L1 -0.15040609 0.1380002 -1.0898974     P  NA</span></span>
+<span id="cb22-13"><a href="#cb22-13" tabindex="-1"></a><span class="co">#&gt; 4  G.us.env.by.geno.Y1_L2.Y1_L2  0.10447875 0.1948188  0.5362869     P  NA</span></span>
+<span id="cb22-14"><a href="#cb22-14" tabindex="-1"></a><span class="co">#&gt; 5  G.us.env.by.geno.Y1_L3.Y1_L1  0.13718616 0.1552147  0.8838475     P  NA</span></span>
+<span id="cb22-15"><a href="#cb22-15" tabindex="-1"></a><span class="co">#&gt; 6  G.us.env.by.geno.Y1_L3.Y1_L2 -0.09930617 0.1513577 -0.6561027     P  NA</span></span>
+<span id="cb22-16"><a href="#cb22-16" tabindex="-1"></a><span class="co">#&gt; 7  G.us.env.by.geno.Y1_L3.Y1_L3  0.23820619 0.2418446  0.9849555     P  NA</span></span>
+<span id="cb22-17"><a href="#cb22-17" tabindex="-1"></a><span class="co">#&gt; 8  G.us.env.by.geno.Y1_L4.Y1_L1 -0.03460073 0.1347036 -0.2568657     P  NA</span></span>
+<span id="cb22-18"><a href="#cb22-18" tabindex="-1"></a><span class="co">#&gt; 9  G.us.env.by.geno.Y1_L4.Y1_L2  0.06445315 0.1359603  0.4740585     P  NA</span></span>
+<span id="cb22-19"><a href="#cb22-19" tabindex="-1"></a><span class="co">#&gt; 10 G.us.env.by.geno.Y1_L4.Y1_L3 -0.04295336 0.1504928 -0.2854181     P  NA</span></span>
+<span id="cb22-20"><a href="#cb22-20" tabindex="-1"></a><span class="co">#&gt; 11 G.us.env.by.geno.Y1_L4.Y1_L4  0.10447875 0.1954488  0.5345583     P  NA</span></span>
+<span id="cb22-21"><a href="#cb22-21" tabindex="-1"></a><span class="co">#&gt; 12 G.us.env.by.geno.Y1_L5.Y1_L1 -0.05951104 0.1475108 -0.4034350     P  NA</span></span></code></pre></div>
+<p>Use <code>us(env):geno</code> only when the number of environments is
+modest. The number of covariance parameters grows quickly as the number
+of environments increases.</p>
+</div>
+<div id="compare-the-models" class="section level2">
+<h2>Compare the Models</h2>
+<p>Information criteria are useful for rough comparison when the models
+are fitted to the same response and fixed-effect structure.</p>
+<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" tabindex="-1"></a>model_compare <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb23-2"><a href="#cb23-2" tabindex="-1"></a>  <span class="at">model =</span> <span class="fu">c</span>(</span>
+<span id="cb23-3"><a href="#cb23-3" tabindex="-1"></a>    <span class="st">&quot;reference&quot;</span>,</span>
+<span id="cb23-4"><a href="#cb23-4" tabindex="-1"></a>    <span class="st">&quot;G-side diag(env)&quot;</span>,</span>
+<span id="cb23-5"><a href="#cb23-5" tabindex="-1"></a>    <span class="st">&quot;R-side diag(env)&quot;</span>,</span>
+<span id="cb23-6"><a href="#cb23-6" tabindex="-1"></a>    <span class="st">&quot;compound symmetry&quot;</span>,</span>
+<span id="cb23-7"><a href="#cb23-7" tabindex="-1"></a>    <span class="st">&quot;FA k=1 without geno&quot;</span>,</span>
+<span id="cb23-8"><a href="#cb23-8" tabindex="-1"></a>    <span class="st">&quot;FA k=1&quot;</span>,</span>
+<span id="cb23-9"><a href="#cb23-9" tabindex="-1"></a>    <span class="st">&quot;FA k=2&quot;</span>,</span>
+<span id="cb23-10"><a href="#cb23-10" tabindex="-1"></a>    <span class="st">&quot;FA + GM&quot;</span>,</span>
+<span id="cb23-11"><a href="#cb23-11" tabindex="-1"></a>    <span class="st">&quot;R-side AR1xAR1 by env&quot;</span>,</span>
+<span id="cb23-12"><a href="#cb23-12" tabindex="-1"></a>    <span class="st">&quot;US GxE&quot;</span></span>
+<span id="cb23-13"><a href="#cb23-13" tabindex="-1"></a>  ),</span>
+<span id="cb23-14"><a href="#cb23-14" tabindex="-1"></a>  <span class="at">logLik =</span> <span class="fu">c</span>(</span>
+<span id="cb23-15"><a href="#cb23-15" tabindex="-1"></a>    fit_ref<span class="sc">$</span>logLik,</span>
+<span id="cb23-16"><a href="#cb23-16" tabindex="-1"></a>    fit_g_diag<span class="sc">$</span>logLik,</span>
+<span id="cb23-17"><a href="#cb23-17" tabindex="-1"></a>    fit_r_diag<span class="sc">$</span>logLik,</span>
+<span id="cb23-18"><a href="#cb23-18" tabindex="-1"></a>    fit_cs<span class="sc">$</span>logLik,</span>
+<span id="cb23-19"><a href="#cb23-19" tabindex="-1"></a>    fit_fa1_no_geno<span class="sc">$</span>logLik,</span>
+<span id="cb23-20"><a href="#cb23-20" tabindex="-1"></a>    fit_fa1<span class="sc">$</span>logLik,</span>
+<span id="cb23-21"><a href="#cb23-21" tabindex="-1"></a>    fit_fa2<span class="sc">$</span>logLik,</span>
+<span id="cb23-22"><a href="#cb23-22" tabindex="-1"></a>    fit_fa_gm<span class="sc">$</span>logLik,</span>
+<span id="cb23-23"><a href="#cb23-23" tabindex="-1"></a>    fit_spatial_r<span class="sc">$</span>logLik,</span>
+<span id="cb23-24"><a href="#cb23-24" tabindex="-1"></a>    fit_us<span class="sc">$</span>logLik</span>
+<span id="cb23-25"><a href="#cb23-25" tabindex="-1"></a>  ),</span>
+<span id="cb23-26"><a href="#cb23-26" tabindex="-1"></a>  <span class="at">AIC =</span> <span class="fu">c</span>(</span>
+<span id="cb23-27"><a href="#cb23-27" tabindex="-1"></a>    fit_ref<span class="sc">$</span>AIC,</span>
+<span id="cb23-28"><a href="#cb23-28" tabindex="-1"></a>    fit_g_diag<span class="sc">$</span>AIC,</span>
+<span id="cb23-29"><a href="#cb23-29" tabindex="-1"></a>    fit_r_diag<span class="sc">$</span>AIC,</span>
+<span id="cb23-30"><a href="#cb23-30" tabindex="-1"></a>    fit_cs<span class="sc">$</span>AIC,</span>
+<span id="cb23-31"><a href="#cb23-31" tabindex="-1"></a>    fit_fa1_no_geno<span class="sc">$</span>AIC,</span>
+<span id="cb23-32"><a href="#cb23-32" tabindex="-1"></a>    fit_fa1<span class="sc">$</span>AIC,</span>
+<span id="cb23-33"><a href="#cb23-33" tabindex="-1"></a>    fit_fa2<span class="sc">$</span>AIC,</span>
+<span id="cb23-34"><a href="#cb23-34" tabindex="-1"></a>    fit_fa_gm<span class="sc">$</span>AIC,</span>
+<span id="cb23-35"><a href="#cb23-35" tabindex="-1"></a>    fit_spatial_r<span class="sc">$</span>AIC,</span>
+<span id="cb23-36"><a href="#cb23-36" tabindex="-1"></a>    fit_us<span class="sc">$</span>AIC</span>
+<span id="cb23-37"><a href="#cb23-37" tabindex="-1"></a>  ),</span>
+<span id="cb23-38"><a href="#cb23-38" tabindex="-1"></a>  <span class="at">BIC =</span> <span class="fu">c</span>(</span>
+<span id="cb23-39"><a href="#cb23-39" tabindex="-1"></a>    fit_ref<span class="sc">$</span>BIC,</span>
+<span id="cb23-40"><a href="#cb23-40" tabindex="-1"></a>    fit_g_diag<span class="sc">$</span>BIC,</span>
+<span id="cb23-41"><a href="#cb23-41" tabindex="-1"></a>    fit_r_diag<span class="sc">$</span>BIC,</span>
+<span id="cb23-42"><a href="#cb23-42" tabindex="-1"></a>    fit_cs<span class="sc">$</span>BIC,</span>
+<span id="cb23-43"><a href="#cb23-43" tabindex="-1"></a>    fit_fa1_no_geno<span class="sc">$</span>BIC,</span>
+<span id="cb23-44"><a href="#cb23-44" tabindex="-1"></a>    fit_fa1<span class="sc">$</span>BIC,</span>
+<span id="cb23-45"><a href="#cb23-45" tabindex="-1"></a>    fit_fa2<span class="sc">$</span>BIC,</span>
+<span id="cb23-46"><a href="#cb23-46" tabindex="-1"></a>    fit_fa_gm<span class="sc">$</span>BIC,</span>
+<span id="cb23-47"><a href="#cb23-47" tabindex="-1"></a>    fit_spatial_r<span class="sc">$</span>BIC,</span>
+<span id="cb23-48"><a href="#cb23-48" tabindex="-1"></a>    fit_us<span class="sc">$</span>BIC</span>
+<span id="cb23-49"><a href="#cb23-49" tabindex="-1"></a>  )</span>
+<span id="cb23-50"><a href="#cb23-50" tabindex="-1"></a>)</span>
+<span id="cb23-51"><a href="#cb23-51" tabindex="-1"></a></span>
+<span id="cb23-52"><a href="#cb23-52" tabindex="-1"></a>model_compare</span>
+<span id="cb23-53"><a href="#cb23-53" tabindex="-1"></a><span class="co">#&gt;                    model    logLik       AIC       BIC</span></span>
+<span id="cb23-54"><a href="#cb23-54" tabindex="-1"></a><span class="co">#&gt; 1              reference -272.8662  553.7325  566.8245</span></span>
+<span id="cb23-55"><a href="#cb23-55" tabindex="-1"></a><span class="co">#&gt; 2       G-side diag(env) -271.8293  559.6586  585.8426</span></span>
+<span id="cb23-56"><a href="#cb23-56" tabindex="-1"></a><span class="co">#&gt; 3       R-side diag(env) -272.3860  560.7720  586.9560</span></span>
+<span id="cb23-57"><a href="#cb23-57" tabindex="-1"></a><span class="co">#&gt; 4      compound symmetry -271.5495  553.0990  569.4640</span></span>
+<span id="cb23-58"><a href="#cb23-58" tabindex="-1"></a><span class="co">#&gt; 5    FA k=1 without geno -268.8503  563.7006  606.2496</span></span>
+<span id="cb23-59"><a href="#cb23-59" tabindex="-1"></a><span class="co">#&gt; 6                 FA k=1 -275.9114  579.8228  625.6448</span></span>
+<span id="cb23-60"><a href="#cb23-60" tabindex="-1"></a><span class="co">#&gt; 7                 FA k=2 -278.6559  593.3118  652.2258</span></span>
+<span id="cb23-61"><a href="#cb23-61" tabindex="-1"></a><span class="co">#&gt; 8                FA + GM -269.0085  566.0171  611.8391</span></span>
+<span id="cb23-62"><a href="#cb23-62" tabindex="-1"></a><span class="co">#&gt; 9  R-side AR1xAR1 by env -825.2592 1674.5184 1713.7944</span></span>
+<span id="cb23-63"><a href="#cb23-63" tabindex="-1"></a><span class="co">#&gt; 10                US GxE -268.8499  543.6998  553.5188</span></span></code></pre></div>
+<p>A practical workflow is:</p>
+<ol style="list-style-type: decimal">
+<li>Fit a simple reference model.</li>
+<li>Add heterogeneity only when it answers a real design or biological
+question.</li>
+<li>Use compound symmetry when a simple common-correlation GxE model is
+enough.</li>
+<li>Use FA when environment covariance is scientifically important.</li>
+<li>Use <code>us()</code> only for modest numbers of environments.</li>
+<li>Check predictions and convergence, not only AIC or BIC.</li>
+</ol>
+</div>
+<div id="selected-literature" class="section level2">
+<h2>Selected Literature</h2>
+<p>Advanced variance structures are used when the ordinary independent
+random effect is too restrictive. Diagonal, compound-symmetry,
+unstructured, and factor-analytic covariance models provide different
+levels of flexibility for genotype-by-environment interaction. Genomic
+and spatial structures extend the same mixed-model framework by
+replacing simple identity covariance assumptions with relationship or
+field-layout covariance information.</p>
+<ul>
+<li>Henderson, C. R. (1975). Best linear unbiased estimation and
+prediction under a selection model. <em>Biometrics</em>, 31,
+423-447.</li>
+<li>Gilmour, A. R., Thompson, R. and Cullis, B. R. (1995). Average
+information REML: an efficient algorithm for variance parameter
+estimation in linear mixed models. <em>Biometrics</em>, 51,
+1440-1450.</li>
+<li>Smith, A., Cullis, B. and Thompson, R. (2001). Analyzing variety by
+environment data using multiplicative mixed models and adjustments for
+spatial field trend. <em>Biometrics</em>, 57, 1138-1147.</li>
+<li>Piepho, H.-P. (1998). Empirical best linear unbiased prediction in
+cultivar trials using factor-analytic variance-covariance structures.
+<em>Theoretical and Applied Genetics</em>, 97, 195-201.</li>
+<li>Kelly, A. M., Smith, A. B., Eccleston, J. A. and Cullis, B. R.
+(2007). The accuracy of varietal selection using factor analytic models
+for multi- environment plant breeding trials. <em>Crop Science</em>, 47,
+1063-1070.</li>
+<li>Burgueño, J., de los Campos, G., Weigel, K. and Crossa, J. (2012).
+Genomic prediction of breeding values when modeling genotype by
+environment interaction using pedigree and dense molecular markers.
+<em>Crop Science</em>, 52, 707-719.</li>
+</ul>
+</div>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

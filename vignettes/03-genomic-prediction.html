@@ -1,0 +1,740 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+
+
+<title>Genomic Prediction</title>
+
+<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
+// be compatible with the behavior of Pandoc < 2.8).
+document.addEventListener('DOMContentLoaded', function(e) {
+  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
+  var i, h, a;
+  for (i = 0; i < hs.length; i++) {
+    h = hs[i];
+    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
+    a = h.attributes;
+    while (a.length > 0) h.removeAttribute(a[0].name);
+  }
+});
+</script>
+
+<style type="text/css">
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+</style>
+
+
+
+<style type="text/css">
+code {
+white-space: pre;
+}
+.sourceCode {
+overflow: visible;
+}
+</style>
+<style type="text/css" data-origin="pandoc">
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+{ counter-reset: source-line 0; }
+pre.numberSource code > span
+{ position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+{ content: counter(source-line);
+position: relative; left: -1em; text-align: right; vertical-align: baseline;
+border: none; display: inline-block;
+-webkit-touch-callout: none; -webkit-user-select: none;
+-khtml-user-select: none; -moz-user-select: none;
+-ms-user-select: none; user-select: none;
+padding: 0 4px; width: 4em;
+color: #aaaaaa;
+}
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa; padding-left: 4px; }
+div.sourceCode
+{ }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } 
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.at { color: #7d9029; } 
+code span.bn { color: #40a070; } 
+code span.bu { color: #008000; } 
+code span.cf { color: #007020; font-weight: bold; } 
+code span.ch { color: #4070a0; } 
+code span.cn { color: #880000; } 
+code span.co { color: #60a0b0; font-style: italic; } 
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.do { color: #ba2121; font-style: italic; } 
+code span.dt { color: #902000; } 
+code span.dv { color: #40a070; } 
+code span.er { color: #ff0000; font-weight: bold; } 
+code span.ex { } 
+code span.fl { color: #40a070; } 
+code span.fu { color: #06287e; } 
+code span.im { color: #008000; font-weight: bold; } 
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.kw { color: #007020; font-weight: bold; } 
+code span.op { color: #666666; } 
+code span.ot { color: #007020; } 
+code span.pp { color: #bc7a00; } 
+code span.sc { color: #4070a0; } 
+code span.ss { color: #bb6688; } 
+code span.st { color: #4070a0; } 
+code span.va { color: #19177c; } 
+code span.vs { color: #4070a0; } 
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } 
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    var j = 0;
+    while (j < rules.length) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">Genomic Prediction</h1>
+
+
+
+<p>This document introduces genomic prediction in Mandala through a
+genomic relationship matrix (GRM). The central idea is that
+<code>mandala_gp()</code> is a small convenience wrapper around
+<code>mandala()</code> for genomic prediction models.</p>
+<p>Under the hood, the model still uses the ordinary Mandala syntax:</p>
+<ol style="list-style-type: decimal">
+<li>prepare or provide a GRM;</li>
+<li>include <code>GM(geno, GRM)</code> in the random model;</li>
+<li>predict tested and untested genotypes from the fitted genomic
+model.</li>
+</ol>
+<p>The examples use the same small MET phenotype dataset as the
+introduction document and add the shared example GRM
+<code>sim_GRM_1000.rds</code>.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="fu">library</span>(mandala)</span></code></pre></div>
+<div id="data" class="section level2">
+<h2>Data</h2>
+<p>The phenotype data are plot-level MET observations. The GRM contains
+the larger simulated genotype pool; <code>mandala_grm_prep()</code>
+automatically aligns it to the genotypes observed in the data.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a>pheno_path <span class="ot">&lt;-</span> <span class="fu">system.file</span>(<span class="st">&quot;extdata&quot;</span>, <span class="st">&quot;fullrep_MET_n1000.csv&quot;</span>, <span class="at">package =</span> <span class="st">&quot;mandala&quot;</span>, <span class="at">mustWork =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a>grm_path <span class="ot">&lt;-</span> <span class="fu">system.file</span>(<span class="st">&quot;extdata&quot;</span>, <span class="st">&quot;sim_GRM_1000.rds&quot;</span>, <span class="at">package =</span> <span class="st">&quot;mandala&quot;</span>, <span class="at">mustWork =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a></span>
+<span id="cb2-4"><a href="#cb2-4" tabindex="-1"></a>met <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(pheno_path, <span class="at">stringsAsFactors =</span> <span class="cn">FALSE</span>, <span class="at">check.names =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb2-5"><a href="#cb2-5" tabindex="-1"></a><span class="cf">for</span> (v <span class="cf">in</span> <span class="fu">c</span>(<span class="st">&quot;geno&quot;</span>, <span class="st">&quot;env&quot;</span>, <span class="st">&quot;rep&quot;</span>, <span class="st">&quot;block&quot;</span>, <span class="st">&quot;row&quot;</span>, <span class="st">&quot;col&quot;</span>)) met[[v]] <span class="ot">&lt;-</span> <span class="fu">factor</span>(met[[v]])</span>
+<span id="cb2-6"><a href="#cb2-6" tabindex="-1"></a>met<span class="sc">$</span>yld <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(met<span class="sc">$</span>yld)</span>
+<span id="cb2-7"><a href="#cb2-7" tabindex="-1"></a></span>
+<span id="cb2-8"><a href="#cb2-8" tabindex="-1"></a>GRM <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(grm_path)</span>
+<span id="cb2-9"><a href="#cb2-9" tabindex="-1"></a></span>
+<span id="cb2-10"><a href="#cb2-10" tabindex="-1"></a><span class="fu">c</span>(</span>
+<span id="cb2-11"><a href="#cb2-11" tabindex="-1"></a>  <span class="at">n_records =</span> <span class="fu">nrow</span>(met),</span>
+<span id="cb2-12"><a href="#cb2-12" tabindex="-1"></a>  <span class="at">n_genotypes =</span> <span class="fu">length</span>(<span class="fu">unique</span>(met<span class="sc">$</span>geno)),</span>
+<span id="cb2-13"><a href="#cb2-13" tabindex="-1"></a>  <span class="at">n_environments =</span> <span class="fu">length</span>(<span class="fu">unique</span>(met<span class="sc">$</span>env)),</span>
+<span id="cb2-14"><a href="#cb2-14" tabindex="-1"></a>  <span class="at">grm_dimension =</span> <span class="fu">nrow</span>(GRM)</span>
+<span id="cb2-15"><a href="#cb2-15" tabindex="-1"></a>)</span>
+<span id="cb2-16"><a href="#cb2-16" tabindex="-1"></a><span class="co">#&gt;      n_records    n_genotypes n_environments  grm_dimension </span></span>
+<span id="cb2-17"><a href="#cb2-17" tabindex="-1"></a><span class="co">#&gt;           1000             50             10           1000</span></span></code></pre></div>
+</div>
+<div id="genomic-prediction-with-mandala" class="section level2">
+<h2>Genomic Prediction with <code>mandala()</code></h2>
+<p>This model uses genomic relationships for the genotype main effect,
+plus a homogeneous genotype-by-environment term and
+block-within-replication term. The only extra preparation is aligning
+the GRM to the phenotype data with <code>mandala_grm_prep()</code>.</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a>G_list <span class="ot">&lt;-</span> <span class="fu">mandala_grm_prep</span>(</span>
+<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a>  <span class="at">GRM =</span> GRM,</span>
+<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a>  <span class="at">data =</span> met,</span>
+<span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a>  <span class="at">geno_col =</span> <span class="st">&quot;geno&quot;</span>,</span>
+<span id="cb3-5"><a href="#cb3-5" tabindex="-1"></a>  <span class="at">verbose =</span> <span class="cn">FALSE</span></span>
+<span id="cb3-6"><a href="#cb3-6" tabindex="-1"></a>)</span>
+<span id="cb3-7"><a href="#cb3-7" tabindex="-1"></a></span>
+<span id="cb3-8"><a href="#cb3-8" tabindex="-1"></a>fit_gm <span class="ot">&lt;-</span> <span class="fu">mandala</span>(</span>
+<span id="cb3-9"><a href="#cb3-9" tabindex="-1"></a>  <span class="at">fixed =</span> yld <span class="sc">~</span> env,</span>
+<span id="cb3-10"><a href="#cb3-10" tabindex="-1"></a>  <span class="at">random =</span> <span class="sc">~</span> <span class="fu">GM</span>(geno, GRM) <span class="sc">+</span> geno<span class="sc">:</span>env <span class="sc">+</span> env<span class="sc">:</span>rep<span class="sc">:</span>block,</span>
+<span id="cb3-11"><a href="#cb3-11" tabindex="-1"></a>  <span class="at">data =</span> met,</span>
+<span id="cb3-12"><a href="#cb3-12" tabindex="-1"></a>  <span class="at">matrix_list =</span> G_list,</span>
+<span id="cb3-13"><a href="#cb3-13" tabindex="-1"></a>  <span class="at">verbose =</span> <span class="cn">FALSE</span></span>
+<span id="cb3-14"><a href="#cb3-14" tabindex="-1"></a>)</span>
+<span id="cb3-15"><a href="#cb3-15" tabindex="-1"></a></span>
+<span id="cb3-16"><a href="#cb3-16" tabindex="-1"></a><span class="fu">summary</span>(fit_gm)</span>
+<span id="cb3-17"><a href="#cb3-17" tabindex="-1"></a><span class="co">#&gt; Model statement:</span></span>
+<span id="cb3-18"><a href="#cb3-18" tabindex="-1"></a><span class="co">#&gt; mandala(fixed = yld ~ env, random = ~GM(geno, GRM) + geno:env + </span></span>
+<span id="cb3-19"><a href="#cb3-19" tabindex="-1"></a><span class="co">#&gt;     env:rep:block, data = met, matrix_list = G_list, verbose = FALSE)</span></span>
+<span id="cb3-20"><a href="#cb3-20" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb3-21"><a href="#cb3-21" tabindex="-1"></a><span class="co">#&gt; Variance Components:</span></span>
+<span id="cb3-22"><a href="#cb3-22" tabindex="-1"></a><span class="co">#&gt;      component   estimate  std.error   z.ratio bound %ch</span></span>
+<span id="cb3-23"><a href="#cb3-23" tabindex="-1"></a><span class="co">#&gt;   GM(geno,GRM) 0.54540814 0.12620151  4.321724     P  NA</span></span>
+<span id="cb3-24"><a href="#cb3-24" tabindex="-1"></a><span class="co">#&gt;       geno:env 0.07574029 0.02727827  2.776580     P  NA</span></span>
+<span id="cb3-25"><a href="#cb3-25" tabindex="-1"></a><span class="co">#&gt;  env:rep:block 0.08046126 0.02323121  3.463499     P  NA</span></span>
+<span id="cb3-26"><a href="#cb3-26" tabindex="-1"></a><span class="co">#&gt;       R.sigma2 0.48906366 0.03213805 15.217590     P  NA</span></span>
+<span id="cb3-27"><a href="#cb3-27" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb3-28"><a href="#cb3-28" tabindex="-1"></a><span class="co">#&gt; Fixed Effects (BLUEs) [first 5]:</span></span>
+<span id="cb3-29"><a href="#cb3-29" tabindex="-1"></a><span class="co">#&gt;       effect   estimate std.error   z.ratio</span></span>
+<span id="cb3-30"><a href="#cb3-30" tabindex="-1"></a><span class="co">#&gt;  (Intercept)  7.0539983 0.4258882 16.563030</span></span>
+<span id="cb3-31"><a href="#cb3-31" tabindex="-1"></a><span class="co">#&gt;     envY1_L2 -0.2672079 0.2010568 -1.329017</span></span>
+<span id="cb3-32"><a href="#cb3-32" tabindex="-1"></a><span class="co">#&gt;     envY1_L3 -0.7769428 0.2010437 -3.864547</span></span>
+<span id="cb3-33"><a href="#cb3-33" tabindex="-1"></a><span class="co">#&gt;     envY1_L4 -1.1048010 0.2010409 -5.495405</span></span>
+<span id="cb3-34"><a href="#cb3-34" tabindex="-1"></a><span class="co">#&gt;     envY1_L5 -0.4548158 0.2010549 -2.262148</span></span>
+<span id="cb3-35"><a href="#cb3-35" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb3-36"><a href="#cb3-36" tabindex="-1"></a><span class="co">#&gt; Converged: TRUE  |  Iterations: 10</span></span>
+<span id="cb3-37"><a href="#cb3-37" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb3-38"><a href="#cb3-38" tabindex="-1"></a><span class="co">#&gt; Model Notes:</span></span>
+<span id="cb3-39"><a href="#cb3-39" tabindex="-1"></a><span class="co">#&gt; - Model size class: complex (n=1000, q=610, MME dim=620).</span></span>
+<span id="cb3-40"><a href="#cb3-40" tabindex="-1"></a><span class="co">#&gt; - Selected prediction SEs are available through mandala_predict().</span></span>
+<span id="cb3-41"><a href="#cb3-41" tabindex="-1"></a><span class="co">#&gt; - Selected fixed-effect tests are available with mandala_fixed_tests(type = &#39;selected&#39;).</span></span>
+<span id="cb3-42"><a href="#cb3-42" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb3-43"><a href="#cb3-43" tabindex="-1"></a><span class="co">#&gt; Random Effects (BLUPs) [first 5]:</span></span>
+<span id="cb3-44"><a href="#cb3-44" tabindex="-1"></a><span class="co">#&gt;        random level   estimate std.error    z.ratio</span></span>
+<span id="cb3-45"><a href="#cb3-45" tabindex="-1"></a><span class="co">#&gt;  GM(geno,GRM)    G1 -0.8081274 0.4365360 -1.8512275</span></span>
+<span id="cb3-46"><a href="#cb3-46" tabindex="-1"></a><span class="co">#&gt;  GM(geno,GRM)   G10  0.1119708 0.4362316  0.2566774</span></span>
+<span id="cb3-47"><a href="#cb3-47" tabindex="-1"></a><span class="co">#&gt;  GM(geno,GRM)   G11  1.3988170 0.4336945  3.2253512</span></span>
+<span id="cb3-48"><a href="#cb3-48" tabindex="-1"></a><span class="co">#&gt;  GM(geno,GRM)   G12  0.3443569 0.4358125  0.7901494</span></span>
+<span id="cb3-49"><a href="#cb3-49" tabindex="-1"></a><span class="co">#&gt;  GM(geno,GRM)   G13  1.1030691 0.4365890  2.5265616</span></span>
+<span id="cb3-50"><a href="#cb3-50" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb3-51"><a href="#cb3-51" tabindex="-1"></a><span class="co">#&gt; logLik: -1225.159   AIC: 2458.318   BIC: 2477.909   logLik_Trunc: -315.410</span></span>
+<span id="cb3-52"><a href="#cb3-52" tabindex="-1"></a>pred_gm <span class="ot">&lt;-</span> <span class="fu">mandala_predict</span>(fit_gm, <span class="st">&quot;geno&quot;</span>, <span class="at">verbose =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb3-53"><a href="#cb3-53" tabindex="-1"></a><span class="fu">head</span>(pred_gm)</span>
+<span id="cb3-54"><a href="#cb3-54" tabindex="-1"></a><span class="co">#&gt;   geno predicted_value std_error</span></span>
+<span id="cb3-55"><a href="#cb3-55" tabindex="-1"></a><span class="co">#&gt; 1   G1        5.786939 0.1562591</span></span>
+<span id="cb3-56"><a href="#cb3-56" tabindex="-1"></a><span class="co">#&gt; 2  G10        6.740107 0.1556430</span></span>
+<span id="cb3-57"><a href="#cb3-57" tabindex="-1"></a><span class="co">#&gt; 3  G11        8.031981 0.1553483</span></span>
+<span id="cb3-58"><a href="#cb3-58" tabindex="-1"></a><span class="co">#&gt; 4  G12        6.950213 0.1552926</span></span>
+<span id="cb3-59"><a href="#cb3-59" tabindex="-1"></a><span class="co">#&gt; 5  G13        7.736765 0.1553067</span></span>
+<span id="cb3-60"><a href="#cb3-60" tabindex="-1"></a><span class="co">#&gt; 6  G14        6.554666 0.1561896</span></span></code></pre></div>
+<p>The genomic relationship can also be used for genotype-by-environment
+effects. This keeps the same GRM, but allows the genomic genotype signal
+to vary by environment.</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a>fit_gm_env <span class="ot">&lt;-</span> <span class="fu">mandala</span>(</span>
+<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a>  <span class="at">fixed =</span> yld <span class="sc">~</span> env,</span>
+<span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a>  <span class="at">random =</span> <span class="sc">~</span> <span class="fu">GM</span>(geno, GRM) <span class="sc">+</span> <span class="fu">GM</span>(geno, GRM)<span class="sc">:</span>env <span class="sc">+</span> env<span class="sc">:</span>rep<span class="sc">:</span>block,</span>
+<span id="cb4-4"><a href="#cb4-4" tabindex="-1"></a>  <span class="at">data =</span> met,</span>
+<span id="cb4-5"><a href="#cb4-5" tabindex="-1"></a>  <span class="at">matrix_list =</span> G_list,</span>
+<span id="cb4-6"><a href="#cb4-6" tabindex="-1"></a>  <span class="at">verbose =</span> <span class="cn">FALSE</span></span>
+<span id="cb4-7"><a href="#cb4-7" tabindex="-1"></a>)</span>
+<span id="cb4-8"><a href="#cb4-8" tabindex="-1"></a></span>
+<span id="cb4-9"><a href="#cb4-9" tabindex="-1"></a><span class="fu">summary</span>(fit_gm_env)</span>
+<span id="cb4-10"><a href="#cb4-10" tabindex="-1"></a><span class="co">#&gt; Model statement:</span></span>
+<span id="cb4-11"><a href="#cb4-11" tabindex="-1"></a><span class="co">#&gt; mandala(fixed = yld ~ env, random = ~GM(geno, GRM) + GM(geno, </span></span>
+<span id="cb4-12"><a href="#cb4-12" tabindex="-1"></a><span class="co">#&gt;     GRM):env + env:rep:block, data = met, matrix_list = G_list, </span></span>
+<span id="cb4-13"><a href="#cb4-13" tabindex="-1"></a><span class="co">#&gt;     verbose = FALSE)</span></span>
+<span id="cb4-14"><a href="#cb4-14" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb4-15"><a href="#cb4-15" tabindex="-1"></a><span class="co">#&gt; Variance Components:</span></span>
+<span id="cb4-16"><a href="#cb4-16" tabindex="-1"></a><span class="co">#&gt;         component   estimate  std.error    z.ratio bound %ch</span></span>
+<span id="cb4-17"><a href="#cb4-17" tabindex="-1"></a><span class="co">#&gt;      GM(geno,GRM) 0.55363275 0.12613741  4.3891241     P  NA</span></span>
+<span id="cb4-18"><a href="#cb4-18" tabindex="-1"></a><span class="co">#&gt;  GM(geno,GRM):env 0.01544381 0.02496859  0.6185297     P  NA</span></span>
+<span id="cb4-19"><a href="#cb4-19" tabindex="-1"></a><span class="co">#&gt;     env:rep:block 0.07782892 0.02297782  3.3871322     P  NA</span></span>
+<span id="cb4-20"><a href="#cb4-20" tabindex="-1"></a><span class="co">#&gt;          R.sigma2 0.55102082 0.03064919 17.9783183     P  NA</span></span>
+<span id="cb4-21"><a href="#cb4-21" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb4-22"><a href="#cb4-22" tabindex="-1"></a><span class="co">#&gt; Fixed Effects (BLUEs) [first 5]:</span></span>
+<span id="cb4-23"><a href="#cb4-23" tabindex="-1"></a><span class="co">#&gt;       effect   estimate std.error   z.ratio</span></span>
+<span id="cb4-24"><a href="#cb4-24" tabindex="-1"></a><span class="co">#&gt;  (Intercept)  7.0538731 0.4325091 16.309192</span></span>
+<span id="cb4-25"><a href="#cb4-25" tabindex="-1"></a><span class="co">#&gt;     envY1_L2 -0.2674258 0.2169121 -1.232877</span></span>
+<span id="cb4-26"><a href="#cb4-26" tabindex="-1"></a><span class="co">#&gt;     envY1_L3 -0.7784810 0.2169276 -3.588667</span></span>
+<span id="cb4-27"><a href="#cb4-27" tabindex="-1"></a><span class="co">#&gt;     envY1_L4 -1.1101087 0.2168907 -5.118287</span></span>
+<span id="cb4-28"><a href="#cb4-28" tabindex="-1"></a><span class="co">#&gt;     envY1_L5 -0.4530669 0.2169387 -2.088455</span></span>
+<span id="cb4-29"><a href="#cb4-29" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb4-30"><a href="#cb4-30" tabindex="-1"></a><span class="co">#&gt; Converged: TRUE  |  Iterations: 15</span></span>
+<span id="cb4-31"><a href="#cb4-31" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb4-32"><a href="#cb4-32" tabindex="-1"></a><span class="co">#&gt; Model Notes:</span></span>
+<span id="cb4-33"><a href="#cb4-33" tabindex="-1"></a><span class="co">#&gt; - Model size class: complex (n=1000, q=610, MME dim=620).</span></span>
+<span id="cb4-34"><a href="#cb4-34" tabindex="-1"></a><span class="co">#&gt; - Selected prediction SEs are available through mandala_predict().</span></span>
+<span id="cb4-35"><a href="#cb4-35" tabindex="-1"></a><span class="co">#&gt; - Selected fixed-effect tests are available with mandala_fixed_tests(type = &#39;selected&#39;).</span></span>
+<span id="cb4-36"><a href="#cb4-36" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb4-37"><a href="#cb4-37" tabindex="-1"></a><span class="co">#&gt; Random Effects (BLUPs) [first 5]:</span></span>
+<span id="cb4-38"><a href="#cb4-38" tabindex="-1"></a><span class="co">#&gt;        random level   estimate std.error    z.ratio</span></span>
+<span id="cb4-39"><a href="#cb4-39" tabindex="-1"></a><span class="co">#&gt;  GM(geno,GRM)    G1 -0.8204456 0.4363476 -1.8802572</span></span>
+<span id="cb4-40"><a href="#cb4-40" tabindex="-1"></a><span class="co">#&gt;  GM(geno,GRM)   G10  0.1187481 0.4360939  0.2722995</span></span>
+<span id="cb4-41"><a href="#cb4-41" tabindex="-1"></a><span class="co">#&gt;  GM(geno,GRM)   G11  1.4070947 0.4338527  3.2432544</span></span>
+<span id="cb4-42"><a href="#cb4-42" tabindex="-1"></a><span class="co">#&gt;  GM(geno,GRM)   G12  0.3427839 0.4357695  0.7866174</span></span>
+<span id="cb4-43"><a href="#cb4-43" tabindex="-1"></a><span class="co">#&gt;  GM(geno,GRM)   G13  1.1098259 0.4364918  2.5426042</span></span>
+<span id="cb4-44"><a href="#cb4-44" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb4-45"><a href="#cb4-45" tabindex="-1"></a><span class="co">#&gt; logLik: -1229.034   AIC: 2466.069   BIC: 2485.660   logLik_Trunc: -319.285</span></span>
+<span id="cb4-46"><a href="#cb4-46" tabindex="-1"></a>pred_gm_env <span class="ot">&lt;-</span> <span class="fu">mandala_predict</span>(fit_gm_env, <span class="st">&quot;geno&quot;</span>, <span class="at">verbose =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb4-47"><a href="#cb4-47" tabindex="-1"></a><span class="fu">head</span>(pred_gm_env)</span>
+<span id="cb4-48"><a href="#cb4-48" tabindex="-1"></a><span class="co">#&gt;   geno predicted_value std_error</span></span>
+<span id="cb4-49"><a href="#cb4-49" tabindex="-1"></a><span class="co">#&gt; 1   G1        5.789891 0.1639351</span></span>
+<span id="cb4-50"><a href="#cb4-50" tabindex="-1"></a><span class="co">#&gt; 2  G10        6.731705 0.1631657</span></span>
+<span id="cb4-51"><a href="#cb4-51" tabindex="-1"></a><span class="co">#&gt; 3  G11        8.023645 0.1628169</span></span>
+<span id="cb4-52"><a href="#cb4-52" tabindex="-1"></a><span class="co">#&gt; 4  G12        6.956366 0.1627007</span></span>
+<span id="cb4-53"><a href="#cb4-53" tabindex="-1"></a><span class="co">#&gt; 5  G13        7.725547 0.1627762</span></span>
+<span id="cb4-54"><a href="#cb4-54" tabindex="-1"></a><span class="co">#&gt; 6  G14        6.557935 0.1638938</span></span></code></pre></div>
+</div>
+<div id="genomic-prediction-with-mandala_gp" class="section level2">
+<h2>Genomic Prediction with <code>mandala_gp()</code></h2>
+<p><code>mandala_gp()</code> is a convenience wrapper for the same model
+family. It can use the same prepared GRM list and stores the genomic
+information needed by helper functions for tested, untested, and
+cross-validation predictions.</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a>gp_fit <span class="ot">&lt;-</span> <span class="fu">mandala_gp</span>(</span>
+<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a>  <span class="at">data =</span> met,</span>
+<span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a>  <span class="at">fixed =</span> yld <span class="sc">~</span> env,</span>
+<span id="cb5-4"><a href="#cb5-4" tabindex="-1"></a>  <span class="at">geno_col =</span> <span class="st">&quot;geno&quot;</span>,</span>
+<span id="cb5-5"><a href="#cb5-5" tabindex="-1"></a>  <span class="at">random =</span> <span class="sc">~</span> <span class="fu">GM</span>(geno, GRM) <span class="sc">+</span> geno<span class="sc">:</span>env <span class="sc">+</span> env<span class="sc">:</span>rep<span class="sc">:</span>block,</span>
+<span id="cb5-6"><a href="#cb5-6" tabindex="-1"></a>  <span class="at">matrix_list =</span> G_list,</span>
+<span id="cb5-7"><a href="#cb5-7" tabindex="-1"></a>  <span class="at">verbose =</span> <span class="cn">FALSE</span></span>
+<span id="cb5-8"><a href="#cb5-8" tabindex="-1"></a>)</span>
+<span id="cb5-9"><a href="#cb5-9" tabindex="-1"></a></span>
+<span id="cb5-10"><a href="#cb5-10" tabindex="-1"></a><span class="fu">summary</span>(gp_fit<span class="sc">$</span>fit)</span>
+<span id="cb5-11"><a href="#cb5-11" tabindex="-1"></a><span class="co">#&gt; Model statement:</span></span>
+<span id="cb5-12"><a href="#cb5-12" tabindex="-1"></a><span class="co">#&gt; mandala(fixed = yld ~ env, random = ~GM(geno, GRM) + geno:env + </span></span>
+<span id="cb5-13"><a href="#cb5-13" tabindex="-1"></a><span class="co">#&gt;     env:rep:block, data = met, matrix_list = `&lt;prepared matrix_list&gt;`, </span></span>
+<span id="cb5-14"><a href="#cb5-14" tabindex="-1"></a><span class="co">#&gt;     method = &quot;sparse&quot;, engine = &quot;auto&quot;)</span></span>
+<span id="cb5-15"><a href="#cb5-15" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb5-16"><a href="#cb5-16" tabindex="-1"></a><span class="co">#&gt; Variance Components:</span></span>
+<span id="cb5-17"><a href="#cb5-17" tabindex="-1"></a><span class="co">#&gt;      component   estimate  std.error   z.ratio bound %ch</span></span>
+<span id="cb5-18"><a href="#cb5-18" tabindex="-1"></a><span class="co">#&gt;   GM(geno,GRM) 0.54540814 0.12620151  4.321724     P  NA</span></span>
+<span id="cb5-19"><a href="#cb5-19" tabindex="-1"></a><span class="co">#&gt;       geno:env 0.07574029 0.02727827  2.776580     P  NA</span></span>
+<span id="cb5-20"><a href="#cb5-20" tabindex="-1"></a><span class="co">#&gt;  env:rep:block 0.08046126 0.02323121  3.463499     P  NA</span></span>
+<span id="cb5-21"><a href="#cb5-21" tabindex="-1"></a><span class="co">#&gt;       R.sigma2 0.48906366 0.03213805 15.217590     P  NA</span></span>
+<span id="cb5-22"><a href="#cb5-22" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb5-23"><a href="#cb5-23" tabindex="-1"></a><span class="co">#&gt; Fixed Effects (BLUEs) [first 5]:</span></span>
+<span id="cb5-24"><a href="#cb5-24" tabindex="-1"></a><span class="co">#&gt;       effect   estimate std.error   z.ratio</span></span>
+<span id="cb5-25"><a href="#cb5-25" tabindex="-1"></a><span class="co">#&gt;  (Intercept)  7.0539983 0.4258882 16.563030</span></span>
+<span id="cb5-26"><a href="#cb5-26" tabindex="-1"></a><span class="co">#&gt;     envY1_L2 -0.2672079 0.2010568 -1.329017</span></span>
+<span id="cb5-27"><a href="#cb5-27" tabindex="-1"></a><span class="co">#&gt;     envY1_L3 -0.7769428 0.2010437 -3.864547</span></span>
+<span id="cb5-28"><a href="#cb5-28" tabindex="-1"></a><span class="co">#&gt;     envY1_L4 -1.1048010 0.2010409 -5.495405</span></span>
+<span id="cb5-29"><a href="#cb5-29" tabindex="-1"></a><span class="co">#&gt;     envY1_L5 -0.4548158 0.2010549 -2.262148</span></span>
+<span id="cb5-30"><a href="#cb5-30" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb5-31"><a href="#cb5-31" tabindex="-1"></a><span class="co">#&gt; Converged: TRUE  |  Iterations: 10</span></span>
+<span id="cb5-32"><a href="#cb5-32" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb5-33"><a href="#cb5-33" tabindex="-1"></a><span class="co">#&gt; Model Notes:</span></span>
+<span id="cb5-34"><a href="#cb5-34" tabindex="-1"></a><span class="co">#&gt; - Model size class: complex (n=1000, q=610, MME dim=620).</span></span>
+<span id="cb5-35"><a href="#cb5-35" tabindex="-1"></a><span class="co">#&gt; - Selected prediction SEs are available through mandala_predict().</span></span>
+<span id="cb5-36"><a href="#cb5-36" tabindex="-1"></a><span class="co">#&gt; - Selected fixed-effect tests are available with mandala_fixed_tests(type = &#39;selected&#39;).</span></span>
+<span id="cb5-37"><a href="#cb5-37" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb5-38"><a href="#cb5-38" tabindex="-1"></a><span class="co">#&gt; Random Effects (BLUPs) [first 5]:</span></span>
+<span id="cb5-39"><a href="#cb5-39" tabindex="-1"></a><span class="co">#&gt;        random level   estimate std.error    z.ratio</span></span>
+<span id="cb5-40"><a href="#cb5-40" tabindex="-1"></a><span class="co">#&gt;  GM(geno,GRM)    G1 -0.8081274 0.4365360 -1.8512275</span></span>
+<span id="cb5-41"><a href="#cb5-41" tabindex="-1"></a><span class="co">#&gt;  GM(geno,GRM)   G10  0.1119708 0.4362316  0.2566774</span></span>
+<span id="cb5-42"><a href="#cb5-42" tabindex="-1"></a><span class="co">#&gt;  GM(geno,GRM)   G11  1.3988170 0.4336945  3.2253512</span></span>
+<span id="cb5-43"><a href="#cb5-43" tabindex="-1"></a><span class="co">#&gt;  GM(geno,GRM)   G12  0.3443569 0.4358125  0.7901494</span></span>
+<span id="cb5-44"><a href="#cb5-44" tabindex="-1"></a><span class="co">#&gt;  GM(geno,GRM)   G13  1.1030691 0.4365890  2.5265616</span></span>
+<span id="cb5-45"><a href="#cb5-45" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb5-46"><a href="#cb5-46" tabindex="-1"></a><span class="co">#&gt; logLik: -1225.159   AIC: 2458.318   BIC: 2477.909   logLik_Trunc: -315.410</span></span></code></pre></div>
+</div>
+<div id="predict-tested-genotype-means" class="section level2">
+<h2>Predict Tested Genotype Means</h2>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a>pred_g <span class="ot">&lt;-</span> <span class="fu">mandala_gp_predict</span>(gp_fit, <span class="st">&quot;geno&quot;</span>, <span class="at">verbose =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a><span class="fu">head</span>(pred_g)</span>
+<span id="cb6-3"><a href="#cb6-3" tabindex="-1"></a><span class="co">#&gt;   geno predicted_value std_error</span></span>
+<span id="cb6-4"><a href="#cb6-4" tabindex="-1"></a><span class="co">#&gt; 1   G1        5.786939 0.1562591</span></span>
+<span id="cb6-5"><a href="#cb6-5" tabindex="-1"></a><span class="co">#&gt; 2  G10        6.740107 0.1556430</span></span>
+<span id="cb6-6"><a href="#cb6-6" tabindex="-1"></a><span class="co">#&gt; 3  G11        8.031981 0.1553483</span></span>
+<span id="cb6-7"><a href="#cb6-7" tabindex="-1"></a><span class="co">#&gt; 4  G12        6.950213 0.1552926</span></span>
+<span id="cb6-8"><a href="#cb6-8" tabindex="-1"></a><span class="co">#&gt; 5  G13        7.736765 0.1553067</span></span>
+<span id="cb6-9"><a href="#cb6-9" tabindex="-1"></a><span class="co">#&gt; 6  G14        6.554666 0.1561896</span></span>
+<span id="cb6-10"><a href="#cb6-10" tabindex="-1"></a></span>
+<span id="cb6-11"><a href="#cb6-11" tabindex="-1"></a>pred_ge <span class="ot">&lt;-</span> <span class="fu">mandala_gp_predict</span>(gp_fit, <span class="st">&quot;geno:env&quot;</span>, <span class="at">verbose =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb6-12"><a href="#cb6-12" tabindex="-1"></a><span class="fu">head</span>(pred_ge)</span>
+<span id="cb6-13"><a href="#cb6-13" tabindex="-1"></a><span class="co">#&gt;   geno   env predicted_value std_error</span></span>
+<span id="cb6-14"><a href="#cb6-14" tabindex="-1"></a><span class="co">#&gt; 1   G1 Y1_L1        6.050564 0.3047670</span></span>
+<span id="cb6-15"><a href="#cb6-15" tabindex="-1"></a><span class="co">#&gt; 2   G1 Y1_L2        5.734578 0.3047672</span></span>
+<span id="cb6-16"><a href="#cb6-16" tabindex="-1"></a><span class="co">#&gt; 3   G1 Y1_L3        5.479284 0.3039156</span></span>
+<span id="cb6-17"><a href="#cb6-17" tabindex="-1"></a><span class="co">#&gt; 4   G1 Y1_L4        5.277320 0.3047260</span></span>
+<span id="cb6-18"><a href="#cb6-18" tabindex="-1"></a><span class="co">#&gt; 5   G1 Y1_L5        5.768992 0.3038358</span></span>
+<span id="cb6-19"><a href="#cb6-19" tabindex="-1"></a><span class="co">#&gt; 6   G1 Y2_L1        6.130175 0.3038194</span></span></code></pre></div>
+</div>
+<div id="predict-tested-and-untested-genotypes" class="section level2">
+<h2>Predict Tested and Untested Genotypes</h2>
+<p>The example GRM contains many genotypes with no phenotype records in
+this small vignette dataset. With <code>include_untested = TRUE</code>,
+Mandala returns the tested predictions from the fitted model and
+projected predictions for untested genotypes present in the full
+GRM.</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a>pred_all <span class="ot">&lt;-</span> <span class="fu">mandala_gp_predict</span>(</span>
+<span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a>  gp_fit,</span>
+<span id="cb7-3"><a href="#cb7-3" tabindex="-1"></a>  <span class="at">classify_term =</span> <span class="st">&quot;geno&quot;</span>,</span>
+<span id="cb7-4"><a href="#cb7-4" tabindex="-1"></a>  <span class="at">include_untested =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb7-5"><a href="#cb7-5" tabindex="-1"></a>  <span class="at">GRM =</span> GRM,</span>
+<span id="cb7-6"><a href="#cb7-6" tabindex="-1"></a>  <span class="at">verbose =</span> <span class="cn">FALSE</span></span>
+<span id="cb7-7"><a href="#cb7-7" tabindex="-1"></a>)</span>
+<span id="cb7-8"><a href="#cb7-8" tabindex="-1"></a></span>
+<span id="cb7-9"><a href="#cb7-9" tabindex="-1"></a><span class="fu">summary</span>(pred_all)</span>
+<span id="cb7-10"><a href="#cb7-10" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb7-11"><a href="#cb7-11" tabindex="-1"></a><span class="co">#&gt; Genomic prediction carried out successfully</span></span>
+<span id="cb7-12"><a href="#cb7-12" tabindex="-1"></a><span class="co">#&gt; -------------------------------------------</span></span>
+<span id="cb7-13"><a href="#cb7-13" tabindex="-1"></a><span class="co">#&gt;                                                item value</span></span>
+<span id="cb7-14"><a href="#cb7-14" tabindex="-1"></a><span class="co">#&gt;                           Total genotypes predicted  1000</span></span>
+<span id="cb7-15"><a href="#cb7-15" tabindex="-1"></a><span class="co">#&gt;       Tested genotypes with phenotypic observations    50</span></span>
+<span id="cb7-16"><a href="#cb7-16" tabindex="-1"></a><span class="co">#&gt;  Untested genotypes without phenotypic observations   950</span></span>
+<span id="cb7-17"><a href="#cb7-17" tabindex="-1"></a><span class="fu">head</span>(pred_all[, <span class="fu">c</span>(<span class="st">&quot;geno&quot;</span>, <span class="st">&quot;predicted_value&quot;</span>, <span class="st">&quot;std_error&quot;</span>, <span class="st">&quot;gebv&quot;</span>, <span class="st">&quot;source&quot;</span>)])</span>
+<span id="cb7-18"><a href="#cb7-18" tabindex="-1"></a><span class="co">#&gt;   geno predicted_value std_error        gebv source</span></span>
+<span id="cb7-19"><a href="#cb7-19" tabindex="-1"></a><span class="co">#&gt; 1   G1        5.786939 0.1562591 -0.80812741 tested</span></span>
+<span id="cb7-20"><a href="#cb7-20" tabindex="-1"></a><span class="co">#&gt; 2  G10        6.740107 0.1556430  0.11197081 tested</span></span>
+<span id="cb7-21"><a href="#cb7-21" tabindex="-1"></a><span class="co">#&gt; 3  G11        8.031981 0.1553483  1.39881704 tested</span></span>
+<span id="cb7-22"><a href="#cb7-22" tabindex="-1"></a><span class="co">#&gt; 4  G12        6.950213 0.1552926  0.34435694 tested</span></span>
+<span id="cb7-23"><a href="#cb7-23" tabindex="-1"></a><span class="co">#&gt; 5  G13        7.736765 0.1553067  1.10306909 tested</span></span>
+<span id="cb7-24"><a href="#cb7-24" tabindex="-1"></a><span class="co">#&gt; 6  G14        6.554666 0.1561896 -0.04512281 tested</span></span>
+<span id="cb7-25"><a href="#cb7-25" tabindex="-1"></a><span class="fu">tail</span>(pred_all[, <span class="fu">c</span>(<span class="st">&quot;geno&quot;</span>, <span class="st">&quot;predicted_value&quot;</span>, <span class="st">&quot;std_error&quot;</span>, <span class="st">&quot;gebv&quot;</span>, <span class="st">&quot;source&quot;</span>)])</span>
+<span id="cb7-26"><a href="#cb7-26" tabindex="-1"></a><span class="co">#&gt;       geno predicted_value std_error        gebv   source</span></span>
+<span id="cb7-27"><a href="#cb7-27" tabindex="-1"></a><span class="co">#&gt; 995   G995        6.555601        NA -0.09479182 untested</span></span>
+<span id="cb7-28"><a href="#cb7-28" tabindex="-1"></a><span class="co">#&gt; 996   G996        6.559796        NA -0.09059622 untested</span></span>
+<span id="cb7-29"><a href="#cb7-29" tabindex="-1"></a><span class="co">#&gt; 997   G997        6.618727        NA -0.03166578 untested</span></span>
+<span id="cb7-30"><a href="#cb7-30" tabindex="-1"></a><span class="co">#&gt; 998   G998        6.615381        NA -0.03501141 untested</span></span>
+<span id="cb7-31"><a href="#cb7-31" tabindex="-1"></a><span class="co">#&gt; 999   G999        6.594937        NA -0.05545487 untested</span></span>
+<span id="cb7-32"><a href="#cb7-32" tabindex="-1"></a><span class="co">#&gt; 1000 G1000        6.671627        NA  0.02123497 untested</span></span></code></pre></div>
+<p>For advanced workflows, <code>mandala_gp_predict_untested()</code>
+remains available when only the explicit GRM projection table is
+required.</p>
+</div>
+<div id="genotype-holdout-cross-validation" class="section level2">
+<h2>Genotype-Holdout Cross-Validation</h2>
+<p>This quick example masks whole genotypes, fits the model on the
+remaining genotypes, and predicts the held-out genotypes from the
+GRM.</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">2026</span>)</span>
+<span id="cb8-2"><a href="#cb8-2" tabindex="-1"></a></span>
+<span id="cb8-3"><a href="#cb8-3" tabindex="-1"></a>gp_cv <span class="ot">&lt;-</span> <span class="fu">mandala_gp_cv</span>(</span>
+<span id="cb8-4"><a href="#cb8-4" tabindex="-1"></a>  <span class="at">data =</span> met,</span>
+<span id="cb8-5"><a href="#cb8-5" tabindex="-1"></a>  <span class="at">fixed =</span> yld <span class="sc">~</span> env,</span>
+<span id="cb8-6"><a href="#cb8-6" tabindex="-1"></a>  <span class="at">geno_col =</span> <span class="st">&quot;geno&quot;</span>,</span>
+<span id="cb8-7"><a href="#cb8-7" tabindex="-1"></a>  <span class="at">random =</span> <span class="sc">~</span> <span class="fu">GM</span>(geno, GRM) <span class="sc">+</span> geno<span class="sc">:</span>env <span class="sc">+</span> env<span class="sc">:</span>rep<span class="sc">:</span>block,</span>
+<span id="cb8-8"><a href="#cb8-8" tabindex="-1"></a>  <span class="at">GRM =</span> GRM,</span>
+<span id="cb8-9"><a href="#cb8-9" tabindex="-1"></a>  <span class="at">k =</span> <span class="dv">5</span>,</span>
+<span id="cb8-10"><a href="#cb8-10" tabindex="-1"></a>  <span class="at">repeats =</span> <span class="dv">1</span>,</span>
+<span id="cb8-11"><a href="#cb8-11" tabindex="-1"></a>  <span class="at">verbose =</span> <span class="cn">FALSE</span></span>
+<span id="cb8-12"><a href="#cb8-12" tabindex="-1"></a>)</span>
+<span id="cb8-13"><a href="#cb8-13" tabindex="-1"></a></span>
+<span id="cb8-14"><a href="#cb8-14" tabindex="-1"></a><span class="fu">summary</span>(gp_cv)</span>
+<span id="cb8-15"><a href="#cb8-15" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb8-16"><a href="#cb8-16" tabindex="-1"></a><span class="co">#&gt; Mandala GP cross-validation summary</span></span>
+<span id="cb8-17"><a href="#cb8-17" tabindex="-1"></a><span class="co">#&gt; -----------------------------------</span></span>
+<span id="cb8-18"><a href="#cb8-18" tabindex="-1"></a><span class="co">#&gt;  repeats k  fold_by mean_pred_ability sd_pred_ability mean_rmse mean_mae n_folds_ok</span></span>
+<span id="cb8-19"><a href="#cb8-19" tabindex="-1"></a><span class="co">#&gt;        1 5 genotype         0.7259711       0.1239532  6.591855 6.576399          5</span></span>
+<span id="cb8-20"><a href="#cb8-20" tabindex="-1"></a>gp_cv<span class="sc">$</span>by_fold</span>
+<span id="cb8-21"><a href="#cb8-21" tabindex="-1"></a><span class="co">#&gt;   repeat_id fold n_train n_test n_eval pred_ability     rmse      mae status</span></span>
+<span id="cb8-22"><a href="#cb8-22" tabindex="-1"></a><span class="co">#&gt; 1         1    1      40     10     10    0.7105344 6.469911 6.459938     ok</span></span>
+<span id="cb8-23"><a href="#cb8-23" tabindex="-1"></a><span class="co">#&gt; 2         1    2      40     10     10    0.5576787 6.440720 6.428987     ok</span></span>
+<span id="cb8-24"><a href="#cb8-24" tabindex="-1"></a><span class="co">#&gt; 3         1    3      40     10     10    0.6757847 6.677241 6.661173     ok</span></span>
+<span id="cb8-25"><a href="#cb8-25" tabindex="-1"></a><span class="co">#&gt; 4         1    4      40     10     10    0.8817879 6.575837 6.557245     ok</span></span>
+<span id="cb8-26"><a href="#cb8-26" tabindex="-1"></a><span class="co">#&gt; 5         1    5      40     10     10    0.8040697 6.795567 6.774654     ok</span></span></code></pre></div>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" tabindex="-1"></a><span class="fu">plot</span>(</span>
+<span id="cb9-2"><a href="#cb9-2" tabindex="-1"></a>  gp_cv<span class="sc">$</span>by_fold<span class="sc">$</span>fold,</span>
+<span id="cb9-3"><a href="#cb9-3" tabindex="-1"></a>  gp_cv<span class="sc">$</span>by_fold<span class="sc">$</span>pred_ability,</span>
+<span id="cb9-4"><a href="#cb9-4" tabindex="-1"></a>  <span class="at">pch =</span> <span class="dv">16</span>,</span>
+<span id="cb9-5"><a href="#cb9-5" tabindex="-1"></a>  <span class="at">xlab =</span> <span class="st">&quot;Fold&quot;</span>,</span>
+<span id="cb9-6"><a href="#cb9-6" tabindex="-1"></a>  <span class="at">ylab =</span> <span class="st">&quot;Prediction ability&quot;</span>,</span>
+<span id="cb9-7"><a href="#cb9-7" tabindex="-1"></a>  <span class="at">main =</span> <span class="st">&quot;Genotype-holdout GP cross-validation&quot;</span></span>
+<span id="cb9-8"><a href="#cb9-8" tabindex="-1"></a>)</span>
+<span id="cb9-9"><a href="#cb9-9" tabindex="-1"></a><span class="fu">abline</span>(<span class="at">h =</span> gp_cv<span class="sc">$</span>summary<span class="sc">$</span>mean_pred_ability, <span class="at">col =</span> <span class="st">&quot;gray40&quot;</span>, <span class="at">lty =</span> <span class="dv">2</span>)</span>
+<span id="cb9-10"><a href="#cb9-10" tabindex="-1"></a><span class="fu">legend</span>(</span>
+<span id="cb9-11"><a href="#cb9-11" tabindex="-1"></a>  <span class="st">&quot;bottomright&quot;</span>,</span>
+<span id="cb9-12"><a href="#cb9-12" tabindex="-1"></a>  <span class="at">legend =</span> <span class="fu">paste0</span>(<span class="st">&quot;mean = &quot;</span>, <span class="fu">round</span>(gp_cv<span class="sc">$</span>summary<span class="sc">$</span>mean_pred_ability, <span class="dv">3</span>)),</span>
+<span id="cb9-13"><a href="#cb9-13" tabindex="-1"></a>  <span class="at">bty =</span> <span class="st">&quot;n&quot;</span></span>
+<span id="cb9-14"><a href="#cb9-14" tabindex="-1"></a>)</span></code></pre></div>
+<p><img role="img" src="data:image/png;base64,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BBBAAIEiFSAALVJuNlaUAj///LONHj3aBg4caE2aNLH99tvPGjdubGeffbbNmTOnKKuyR9vavXu3LVmyZI8+m44P/fDDD3byySe7x1NPPVXoVbj//vuj65dNXmndunXRsuPGjcuraKEv25PjpvPx73//u3Xo0MGqVatmBx98sJ1wwgl211132S+//JKrjg8++GB0/3zz0047zbp06WIDBgyw1157LddnyChcgXjnY/C8Gzt2bNINBsv/mfN0+fLltmnTpuj2guvNTz2iH+QFAkUpECEhkIUCb731VqRGjRoR728p4ePCCy/M2D2fN29e5Jhjjon07t07Y+sYW7Fvv/02an3bbbfFLv7T7/v16xdd/65du/Jc34oVK6Jlb7311jzLFubCgh63bdu2RbyAMVrXeOdrlSpVIosXL85RzYsuuijPz2g9/fv3j2zdujXH53hTeALxzsfgeXfLLbck3Viw/J6cp1u2bIncfPPNkb322ivy9ddfR7cXXG9+6hH9IC8QKEKB0kUZ7LItBIpC4KuvvrIzzjjDvP+c3eaOPfZYa9++ve277742ffp0mz9/vv3xxx/2+OOP25FHHmmDBw8uimoVaBtq/VI67LDDCvQ5CqdXoKDHbdCgQfbkk0+6Su+zzz527rnn2hFHHGGff/65vf7667Z27VrbsGGDaxn95ptvbO+99861g/qMF6Tazp07zQs87M0333Rl1PLVsWNH69GjR67PkJEaAR3DM88806388MMPT81GAmv95z//aXfffXcg539fFnU9clWADATyIUAAmg8kioRL4OKLL44Gn15LnOlRokQJtxNea4E99thjdskll7j3jzzyiF199dXR5f6eej8CbeXKle5yqP4zz0/69ddf7bfffrODDjooafH169dbyZIlrWrVqknLFlYBBd2rV6+22rVr59rf4Db2ZN+Dnw++9tdVq1YtK1067/9u/qyJPl+qVCkXjAXrkNfrP7vNvNadbJnXSu9+BKlcvXr13I+jQw89NPoxr/XSmjZtasuWLTN1b5g0aZL17ds3utx/4bVwuR9S/vuJEyfa+eef796++uqr+Q5AdX5899137vK/HJMlXfLVOVyhQoVcRbWuVatWuXMtr3V5Ldm2Zs0a94OwevXqltffmrangFxdafbff3+37VwbLsSMzZs3O/cyZcqY6hYv+I/d3AEHHGD//e9/Y7NzvC/IebonddDG8lMPlSvo+a+/Zx1X/R9XtmxZrYKEwJ4LeCcUCYGsEfBaP6OXJps3bx7xvgjj7tvw4cMjTz/9dOSTTz6JeH32omV+//33iNciGvG+VN16vC/YiBcERLxW02gZvfD6lUa8FtVI69atI1988UWkZcuWEZX1/hIjhxxySGTGjBk5yuuNLod6LV4Rr1UzWseaNWtGHnjggWg9Fy5c6Nar9ejhBW3uvRcoR8455xz3unz58pHvv/8+x/qHDRvmlqlOixYtinz88cfR916LWMQLuCMVK1Z066xcuXJkxIgROT6vN/nd91wf/P8ZwUvwXn/GyJ133hnRtrQfukR46aWXum0EP58fE798vEueWjZ79uyIF7i57Xg/NNyxkL9vGHtpM7/b/PTTT6OGsV5ef0u3zGvlctXL67j59Y997tWrV7SOL730Uuxi937BggURnas6hl5LaLRM8BK86hlMOo5e0OfWXb9+/eCiuK+9/oMRr+9ppFy5cu4zXoAXOeussyIvvvhijvJe/1K3z927d494/R/dNrzgLOK1wEXLvfHGG25d/t+P1uldfYjo7zKYvEAy0qdPH3d++8dJx05lvQAnWDTy7LPPRrwAPWql8gceeGDk4YcfzlEu0Rvti/4utF9BQ5XX35WW6TF37ly3Cv09ey3ZObbnBVuRCy64IKIuE36Kdz6q7v767rjjDr+oey7IeZqfOvz1r3+NyN/38wLkiBcou23lVY/8nv9ei3t0X6ZOnRrR37T3g9ltTx7af3UBICGwpwK2px/kcwhkooA36Cj6H/I999xT4Cqecsop0c/rS9QPKhUIBoNKr4XJlfNaGtwXm74I1FfP/zLwWnIiXutCdPv64tKXq7889llf7koffPBB3DLeoJOIghT/c/riDCYFQlrmdSlw2R9++GG0rP/lHfyyUtlYn/zue3C7wdfBALRSpUpu+woU/GBI2wz2Dc2vib+NeF/4+mHgHyOt3w+y/WBKecEAtCDb9AaARQ0VBAbTX/7yF7dMPzaU8jpurkCcfxQsqH6qa/BHUJyiubLyCkC9FrhovTt37pzrs8EM9RX0zVQX/VDQsx4KCKdMmRIt7p+/Oue1zC/ntbK6Ml6XgYgCEz8/+KzgyA/wVNj309/VUUcd5R7+Ok866aSox8yZM6Pb0nYVGPo/alReQV2y9PLLL0frpP8fgqlZs2ZumX7A6BjoB6t+TPp1Vz/y4PnltUBHPx7vfEzU97Ig52l+69CpU6doPf366lgqJapHQc5/r+U9uv6GDRu61zoGQY8bbrgh6sELBAoqQABaUDHKZ7SAOuT7/xk/99xzOeo6a9asiDc6O9fDb018/vnno59VK6h+3asVwBtB7/I1KMhPfgCqban1aOPGje7LS60k/vYnT57sF49cfvnl0Xx9iamF45133ol4I5ij+WPGjHEthBpM4K/D60/mBhd4I6EjO3bsiOgLQMvatGkTXfdnn30WLf+Pf/zD5QcDUH1RP/TQQxHvcp4LYr3L4a68WlJ//PFHV74g+x7dcMyLYACqwMLrb+tKyNAPctSa7Kf8mvjl433hn3jiidF9HzVqVGT79u2utdrrRxnNDwagBdlmQQJQtTomOm5+/YPPqqcfcKlFPJh++umnXOeozlu1LvopGIB6XU4iQ4cOjVx33XWRnj175mgV03HPK3kzQjgn/Uj4z3/+41rptd9+C6Z+2PjBsR+A6vxTy79+kKkl1Ot76lot/eDVG8Ef8fqfRryR2JH77rsvovNMn2nQoIFbv/7e/PNb2/TTM888E9FVCx1nnUtK2jeVVSDo10PW7dq1i3j9WyP/+te//I8nfNaANV1p0HqOP/74aDkN7PLr4f/dvP322xHts36s+cGtd+k/4nVbcWW1b36Kdz4mCvwKcp7mtw5e1wV3RcXfB7WS629NKVE9CnL+BwNQ/T17Myu4deuqkX5QaLverCIuj38Q2BMBAtA9UeMzGSugX+T+f8i6dBdM8VoMVNZv2dQlbr3Xl7EfmOnzutTnr9MbHOJWGQxAv/zyy+hm9CXgl3300Uej+f4XmC5hBUdw6wvDL9+qVatoeT8vdhT8Nddc48orePH6c7ryt99+u8tTy4TXh8/lBQPQYOCshaqXv361DikVZN8VWOqSXPChoCkYgHqDwNx6/X8UMGibCn79VFCT2C98BXF+a4xaaIJJPz78fQwGoAXZZkECUH/b/jZjj5u/3H/WZVC/bKNGjfxs95yoNVVBn5+CAai/ntjnrl27Rrt2+J8LPqulzQ8a9UMnmPQ3oXNZQaSfggGougYEkzeQKro/sUGvfnD5dZs2bVrE6ysdbRVXoKvlCrC9fq7BVbrXf/vb36Kf1Xmsribvvvtujr8h/0PqShA8J/Xa7zqjlne/DkuXLnUfufbaa12egk11CQgm/dhT0jmm7R199NGurOrrp9jzUfnxAr89OU+1rvzUwf/b177lZxR8Qc7/YADqDXRTlaLJ76KgKxwkBPZUgHlAvb9cUvYIeC0d0Z3xvgyir/VCAxy8LxD3iNeB3vsP3JX3ghrzLgO6OUM1b6jX/y+6Hg3SiE116tSJZnktfdHX3hePe+19MbqO+3rjXRJ1A2X8Qhp84l2CdG+9vnz6QegvivvsTa3j8lXOa2F1r/1nzQepwT6xSSOhg8m77Bh9qwEuSgXZdy+4crMMaKYB/+G1ikTXqRd169bN8d4fXKJBWkqFYaJBYl6rmFvf6aef7p79fzS7QWz6M9uMPS7+dmO3kd/3GtCiwTRK2o/g+r0fQNHzVOdrsuQFsG6wkhegmdcybt6PCTdgyevDmedAHZ3LXmuiW70XwOfYzKmnnupmjtCcpLHJaw2z4Dmk5cF5db3AN8dHgu91nmifNPpfSYNsxo8fb96VA/NaOe24446zV155Jfp5DSj0Wv3de+9HlRtQqH1UvbQODaLxk+Y+9c9H//mmm25yizUXsFyVtD0NftJgLSWNWvcCKfda/2hQlOZZbdu2renvWdv76KOP3PLgcYp+IMmLgp6nWl1h10Hr/DPnf/D/OK3L/3/O/z9OeSQECipAAFpQMcpntIA/DY4qqWlsgkmjiDVSXQ+v9SO4yL32+ke5Z31ReZcNow992emLUQ+v1SjH57yWSPP68EXz/C+5aIb3QsGGn/TlHZu0DiX/OXZ58L2CVQUaSi+88IJpyikFrkpeS5J7jv3Ha+WKzYq+V7CttCf7Hl1JnBd+cOUv8rfjf4EXhknQyw9w/e15XSL8l9HnP7NNBSzBVBhfvP65qiBQI+L95LW2Rc/TYIDlL4999vppmjfwzLyBUOZ16zCv9dfdbME3jy3vvw8G0QXZH/1txJ7HQdvYv4HgcfK3rQBPf48KdP2/H50bXuuvKWD1f1RpVgDtl9cSasEgSFNTeZff3edjj42/jeCzJvb3roC4LO/KiHl9S02TtSspyPWT/pb093XjjTfae++9Z16/aPNadN12VCaZqb+e4HNw//NznqaiDqpP8BjFHj8t9+vpPyvPT7H/h8QeY78czwgURCD3t2FBPk1ZBDJMQF8eXh8u8/pYRr+MNU9ibPIuscdmuVY7fU5faJq+RlO9KClg9S7T5fgPPNeH88jQFC768lSLrHdZ0LXa+V9kah3xLvW6T6vVLvY/fz9gC65eraBqDfqf//kf9+WoZd7IW/NGxQaLRV/rCzyYNMekn/xpf9Rimd99f+KJJyw2YFHd/XlX/XXn9fxnTPz1ylRfpDpefhDuL9N8r7GpoNsMfmHH7pumRcorxTtuseW9UeDuPFO+13XEtSIquAsmP0gK5hXWa28AlQv+dCy9fsQ5Vqu7/Ogc03HVj7VgveJdPfD6VprXn9OtQ9MQ+S2cygi2aPqt/fohp9deFxAX1HmXyl3Q6XUPcevwg2i90bntzaBgqpNa8bzuAe68148vrx+nO2+1LrWC60dZMPmtp8rT1Gv6+/O6vdjtt9/uium8VxDsJ6+7jQtMFRTLxJtFwC3yW3j9v1u/fH6eC3qe7mkdkp1zBT3/g/sW+/9ScBmvEdhjAe+kJSGQVQLqk+kP1vH+43Qd9dVvUVPleJPPuwEU3h+M69OlZ78PqAZE+PnqS6rBDuonp/6L3hdPRCNmNSBBye8DqvUHk7bhryM4dU+wH5ymI/KC0Yh3WS8S7JeqQUh+8kesa9sauerdVtRf5F5r5LS2o+3rWVPaBFOwD6jq7n0xu8VeS1tEU/PoM+rP5o/UL8i+B7cTfB3sAxoc7a4yGuWvbWoEs58KahKvz52mQ9J6vRaZiAZSKWnwiPel7/K1LNgHtCDb1OAaf1S3jr0XqLmBMME+wV4Q57bp/5PXcfPLBJ+vuuqqaD3Vj9W7HaM7LzTgQ+egpvTRPuiRqA+oF3wHV1mg1+r76a9f0ylpsJv6d/qDxjQ63E9+H1BvDkg/K/qs/oI6z7Quzbqg8019PTVIKLgu9X3V4Dzvh4Mrq330k/oR+96a5kxJg5K0Ts2q4A8WVL7ff1PL/H7Pys8r6W/Z7wPp77N3q9McH/FH53stldG/Oe2bvw86vn6Kdz7q79pfd/AORAU5TwtSBx0zf3s67/1+tInqUZDzP9gHVH1vgyne33NwOa8RyI8Ag5Dyo0SZ0AkoAPO/NPz/oGOf9SWo0e76olRSgOF/4amsglh1svc/p5G9fipoAKovdu8SfnRdCpj89epZgWgwBecKVZAZ/DJTOY12Dn5eA0aCKRiA+gNN/KmR/M8Fp2EqyL4HtxN8XdAAtKAm8b7wNd+pH8xov/x99Fp7osFMMAAt6Da9foBRZwXPCr50PLyWM5cfG4AmO25BL73WyO5gUOAfm9hnjer3R2Xrc8FBSH8mAFWQoWDL317wvNR++j9ctM28AlAt17y6wc8HX+sHk0Z3K+kHlddiGd2mDDVK3GtxdnkKQt9//31XVuv0f2QpX+V8e9W5W7durlx+/9HcnP6+6rwJBrVah+a69Jd7XW8imppMQadfBy3TOaQU73xMFPgV5DwtSB2Cg+1UR/0I0OClRPUoyPlPAOoOM/+kUIAANIW4rDq9AgrCvNsQRgMRfXnoS9G7rBjxBj1ENH1RbPIGybhlah1Uef2H3qJFCzfdTLBsQQNQfVaBru7P7U+DpPVrcmwFgt5l5ODq3Re//4WsLxa1+ASTpuTR5/XQ+tS6E0zBAFRTzKhFyW+hUsARO6+lPpvffQ9uJ/i6oAGoPlsQk3hf+FqHprMKtnjqeHmXaqPzRQYD0IJuU7MhaHYCPwCRtYIyv+UyNgDVsryOm7Yfm9TSqmOk1kb/mOpZMyYoAFKLq8oEU2EFoFqnpgTTtF7+Pmrb2i9NixRMyQJQldVctWqp9Vsy9femdcf+ranlXX8Lfku+v99qadbcn8EkU3+eW7+cflRpRgj/x2OwfF6vNXWR/4MlXvCqqx7BGwSo/prRIDi3qjd4yW0i3vmYKPDTB/J7nhakDvqb9VtMZaP/t9QKmlc98vs3RwCa15nEssIQcNcPvROXhEDWCngtAu4WlN5/vKYRw8G+fYl22vvjcn3FvFavaF/QRGX3JN/7gnB937xLggk/roFB3peAecFAdNSpX1h957w70ri36j/ozbfoL3LPGrXrD1bSKH7dblQjjjXyWSOevS/hHOWDb1K978FtBV/nxyRYPva1Pq9jGxzRHFsm9n1+t+l1gXB9gdVnMFnK67gl+6y2o2Oke7vndW4kW8+eLNcMBTrf1G9St1r0AtI9WY37jAZWaV3qQ5nX35vK6faw3qV5t7/6e0uU1G/ba7E0ldFsD3mdw4nWkd98DXJSvby5S/Osf37XFyyX3/O0IHXQ7TH1/5y8C3Lc8nv+B+vPawQKS4AAtLAkWQ8CKRZQYONdQnODQ66//nrz5jN0QawGFSmwDqZ4AWhwOa8RQAABBBBIp0DiZpB01optI4BALgG1cnh9DHPka07O2OAzRwHeIIAAAgggkIECBKAZeFCoEgLxBDSXoS4/ao5LXSb1BiKZ15czXlE3dY13T2u3rCCXpOOujEwEEEAAAQQKWYBL8IUMyuoQSLWA5lD0BkekejOsHwEEEEAAgZQJEICmjJYVI4AAAggggAACCMQT4Fac8VTIQwABBBBAAAEEEEiZAAFoymhZMQIIIIAAAggggEA8AQLQeCrkIYAAAggggAACCKRMgAA0ZbSsGAEEEEAAAQQQQCCeAAFoPBXyEEAAAQQQQAABBFImQACaMlpWjAACCCCAAAIIIBBPgAA0ngp5CCCAAAIIIIAAAikTIABNGS0rRgABBBBAAAEEEIgnQAAaT4U8BBBAAAEEEEAAgZQJEICmjJYVI4AAAggggAACCMQTIACNp0IeAggggAACCCCAQMoECEBTRsuKEUAAAQQQQAABBOIJEIDGUyEPAQQQQAABBBBAIGUCBKApo2XFCCCAAAIIIIAAAvEECEDjqZCHAAIIIIAAAgggkDIBAtCU0bJiBBBAAAEEEEAAgXgCBKDxVMhDAAEEEEAAAQQQSJkAAWjKaFkxAggggAACCCCAQDwBAtB4KuQhgAACCCCAAAIIpEyAADRltKwYAQQQQAABBBBAIJ4AAWg8FfIQQAABBBBAAAEEUiZAAJoyWlaMAAIIIIAAAgggEE+AADSeCnkIIIAAAggggAACKRMgAE0ZLStGAAEEEEAAAQQQiCdAABpPhTwEEEAAAQQQQACBlAmUTtmas3zFI0eOtEcffdQqVaqU5XvK7iGAAAIIIIBAmAT22msvmzp1qlWoUCFjq10i4qWMrV0GV+zYY4+1u+66iwA0g48RVUMAAQQQQKA4Cpx00kn23nvvWdOmTTN292kB3cNDU7p0aatYsaK1atVqD9fAxxBAAAEEEEAAgcIXaNiwYeGvtJDXSB/QQgZldQgggAACCCCAAAJ5CxCA5u3DUgQQQAABBBBAAIFCFiAALWRQVocAAggggAACCCCQtwABaN4+LEUAAQQQQAABBBAoZAEC0EIGZXUIIIAAAggggAACeQswCj5vH5YigAACCCCQMoEPP/zQnn32Wdu4caOdeOKJ1rt3b9MsKyQEsl2AszzbjzD7hwACCCCQkQJjxoyxSy+91Hbv3u3q98QTT9iTTz5p06dPN00kTkIgmwW4BJ/NR5d9QwABBBDISIG1a9faoEGDosGnX8m5c+ea7rRHQiDbBQhAs/0Is38IIIAAAhkn8NZbb9n27dvj1uuNN96Im08mAtkkQACaTUeTfUEAAQQQCIVAXv0881oWip2jkgjkQ4AANB9IFEEAAQQQQKAwBU4++WQrX7583FV27do1bj6ZCGSTAAFoNh1N9gUBBBBAIBQCVatWtXHjxlm5cuVy1Ld79+522WWX5cjjDQLZKMAo+Gw8quwTAggggEDGC5x11ll29NFH26RJk2zTpk3Wpk0b69ixY8bXmwoiUBgCBKCFocg6EEAAAQQQ2AOBunXr2g033LAHn+QjCIRbgEvw4T5+1B4BBBBAAAEEEAidAAFo6A4ZFUYAAQQQQAABBMItQAAa7uNH7RFAAAEEEEAAgdAJEICG7pBRYQQQQAABBBBAINwCBKDhPn7UHgEEEEAAAQQQCJ0AAWjoDhkVRgABBBBAAAEEwi1AABru40ftEUAAAQQQQACB0AlkTQC6detW+/DDD+3rr7+2P/74I3QHggojgAACCCCAAALFRSB0AegDDzxgt956a47jc++991qVKlWsRYsW1rBhQ2vUqJHNmDEjRxneIIAAAggggAACCGSGQOjuhLRkyRJbv359VG/s2LE2dOhQO+WUU6xXr17266+/2rPPPmvdunWz+fPnW7NmzaJleYEAAggggAACCCCQfoHQBaCxZGPGjLFWrVrZzJkzo4sGDx7s7q87YsQIGzduXDSfFwgggAACCCCAAALpFwjdJfhYso0bN9r5558fm20XXXSRLV68OFc+GQgggAACCCCAAALpFQhlALpt2zbbuXOnk+vatautWbMml6IGJO2///658slAAAEEEEAAAQQQSK9A6ALQEiVK2Jw5c6xChQrWsmVLN/J95MiR9vHHHzvJ1atX22WXXWZPP/209ezZM726bB0BBBBAAAEEEEAgl0DoAtDHHnvMBZujR4+2448/3rZv326lS5e2b775xu3ca6+9ZlqmS/ADBw7MtcNkIIAAAggggAACCKRXIHSDkMqWLetGtmt0e79+/aJ6u3btcq/POOMM69y5s9WqVSu6jBcIIIAAAggggAACmSMQuhbQRHRqBd29e7epf2j16tUTFSMfAQQQQAABBBBAIM0CoQxAP/30U7v00kttwIAB9vbbbztCTVCvwPPQQw+1/fbbz3SpnoQAAggggAACCCCQeQKhuwSv4PPYY481XYrXKPfnnnvOHn74Ybv99tvt3HPPdRPST5o0yQ1E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lkDoAtBmzZq5KaA0+v6CCy5wI/JjSdu3b28zZsywtm3bxi7iPQIIIIAAAggggECaBfIVgM6fP99GjBhhmnB+x44duaq8cOHCXHmpzDj00EPdCHfVZdWqVaZWT92NqUaNGlarVi03JVMqt8+6EUAAAQQQQAABBPZcIGkA+t1331mHDh3cHJuahL5ixYp7vrVC/qRG5isY1YOEAAIIIIAAAgggEA6BpAGo5tJU/0rd+ci/9WY4do1aIoAAAggggAACCGSiQNJR8LrVpS5rE3xm4uGjTggggAACCCCAQPgEkgagJ510kn377bf22WefhW/vqDECCCCAAAIIIIBAxgkkvQS/1157maY+0ojyc845x7WG6nacwXTDDTcE3xaL1+qW8PXXX9tzzz2XY3/POussNxF+MPODDz5wQXww76CDDoo7Sl+3ENWAqmBq2bJlrlue/vDDD/b2228Hi7nXbB9/3YghmDj/+PtTI0Iw8f8P///GmyWG75/s+/4N/t1n2uukAejixYtt0qRJrt4TJkyIW//iGIAKokSJEhYbjMcDUrAaW0558VK8stpObIpXLraM/z5eWbaPv39+BJ/jnSucf/z9Bc8RvY53nsSW8d/HK8v/P/z/458fwed45wr///y5/3+Cvpn2uoTXxzOSaZUKQ30qVKhgDz74oF100UVhqC51RAABBBBAAIFiItC0aVMbP3686TlTU9IW0GDFNSXTsmXLTJdvGjZs6H4FB5fzGgEEEEAAAQQQQACBZALxrwPEfEr9h04++WSrXbu2ez788MNNLYDXXnut0YAag8VbBBBAAAEEEEAAgTwFkraA6m5D3bp1sy1bttiQIUOsc+fOVrp0aZs7d67de++9psng//GPf+S5ERYigAACCCCAAAIIIOALJA1AZ86caZ988ol7NG7c2P+c6a5I6hz8wAMPEIBGVXiBAAIIIIAAAgggkEwg6SX4pUuXWosWLSwYfPor7devn/3444+2fPlyP4tnBBBAAAEEEEAAAQTyFEgagNasWdMWLVpkGoAUm1599VU3vVD16tVjF/EeAQQQQAABBBBAAIG4AkkD0NNPP92qVq1qAwcOdIHo9u3b7ddff7XXXnvNhg0bZt27d7e999477srJRAABBBBAAAEEEEAgViBpH9CKFSvaSy+9ZOeff741b97c9fv0R763b9/eRo0aFbtO3u+B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3Z2SVqxYEbuI9wgggAACeQh88803CZfmtSzhh1iAAAIIhEggaQBat25dmzdvnul+8LHpueeeM7WI1qxZM3YR7xFAAAEE8hBo0KBBwqV5LUv4IRYggAACIRJIGoCefPLJVqtWLevUqZM9++yztnv3blOr6K233uoeukWnRsaTEEAAAQTyL3DCCSdYu3btcn1AM45cd911ufLJQAABBLJJIGkAqpHvL730krsbkoLNLVu22Pnnn2933XWXtWnTxh5++OFs8mBfEEAAgSITePnll61Pnz5umjttVDf7mD59unsuskqwIQQQQCANAknnAd24caN99tln7jL8p59+6lo/1eKpfqGaMoSEAAIIILBnApUqVbLx48fbE0884W5zrDvPkRBAAIHiIJA0AH3ttddci+d3331nGnSkBwkBBBBAoPAEypQpw809Co+TNSGAQAgEkl6C1+TISps2bQrB7lBFBBBAAAEEEEAAgUwXSNoC2qxZM1Pfz7/85S/WvXt3q1+/frS/kr9z1157rf+SZwQQQAABBBBAAAEE8hRIGoDqjhzqKK+kUfDxUiYEoLqP8hdffOFuaad71ZcqVSpeVclDAAEEEEAAAQQQSLNA0kvwHTp0sN9++y3PR1HuwwMPPOCmfwpu895777UqVapYixYtrGHDhtaoUSObMWNGsAivEUAAAQQQQAABBDJEIGkLaIbUM1qNJUuW5JgUf+zYsTZ06FA75ZRTXFeBX3/91bXUduvWzebPn2/qQkBCAAEEEEAAAQQQyByBhC2gP/74o/Xu3dtNQq9+n5oYWXOAZloaM2aMtWrVynTP+gEDBrj71b///vt22GGH2YgRIzKtutQHAQQQQAABBBAo9gJxA1Dd7UiDjl588UVr2rSp7bvvvvbggw/axRdfnHFgmqdUE+PHposuusgWL14cm817BBBAAAEEEEAAgTQLxA1A586da1999ZVNmTLFNA+oLnur76UGIa1ZsybNVTbbtm2b7dy509Wja9eucev04Ycfmj+FVNorTAUQQAABBBBAAAEEogJxA9Bly5bZPvvs4+7/7pfU5Xilb775xs9Ky3OJEiVszpw5pjuGtGzZ0hRojhw50jRaX2n16tV22WWX2dNPP209e/ZMSx3ZKAIIIIAAAggggEBigbgBqAby6BZxweS3Jq5duzaYXeSvH3vsMRdsjh492o4//njb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DNfatWDBAtfyrSooGD333HPt66+/tgYNGqShVmwyHQI33HCD7b333unYNNtMo8CSJUvslFNOsdtvvz2NtUjfprkEnz57t+XHH3/catasaR999JEVl189aSbPmM03b97cRo0aFQ0+VbEKFSq4ltCNGzdmTD2pSGoE1PqtS/DqduGntWvXupdlypTxs3jOcoHZs2fbs88+aw8//HCW7ym7FyuwePFi0/eAUnHsB04AGntGFPF7/fJRn7+6desW8ZbZXLoF9B/PZZddlqMauiSzYsUKa9WqVY583mSfQIkSJaJ/97/++qtNmjTJhg8fbl26dLE6depk3w6zR7kENm/e7C6/6rirKw6p+Ajox+b69ett6dKl1r59e9cCrh+j+g4oLokANM1H+sADD0xzDdh8pgioH9gVV1zhLr1eeOGFmVIt6lEEAroM17NnT9u2bZs9+uijRbBFNpEJAtdff70deuihNnDgwEyoDnUoQgFdfleaM2eOde/e3YYMGWJr1qyxdu3a2WeffVaENUnfpugDmj57toxAVGDLli125pln2jfffOP+QypXrlx0GS+yX0BdcfTl88ADD1jTpk1N/UMZhJbdx11Xvp555hnzA5Hs3lv2LlagYcOG9q9//cvOO+88q1Klilt86aWXWq1atWzYsGH2wgsvxH4k694TgGbdIWWHwiagaXdOP/10++qrr2z69Ol29NFHh20XqO+fFFDQqccJJ5zgpmOaMGECAeifNM3kj2vks1o91eq9bt0691DXGyVNzaaApHHjxu49/2SngLrZ6IpXMB100EHu/4BFixYFs7P2NQFo1h5adiwMAur7p2l3Vq5caW+99ZY1a9YsDNWmjoUgsGrVKtOjTZs20bVVqlTJ9f/VNFyk7BVQ0Pndd9/Zk08+6R7BPVW/cM2K8cEHHwSzeZ1lAv4PjyZNmuTYM80Jrb6hxSHRB7Q4HGX2MSMFNOpRA05Wr15t77zzDsFnRh6l1FVq7Nixrr/X8uXLoxtRa7jmAGVGjChJVr7QZVb18ws+pk6d6vb1qaeesueffz4r95ud+j8BXX7XQNRly5ZFM9UgMXPmzOjI+OiCLH1BAJqlB5bdynwBzfWpwPOss84yzQWp/mD+Qx3TSdkt0KtXL1NfX90JSfN+fvLJJ+5OaDt37rTBgwdn984X873TNFtHHHFEjkf9+vWdii7NMitK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" /><!-- --></p>
+</div>
+<div id="relationship-matrix-diagnostics" class="section level2">
+<h2>Relationship-Matrix Diagnostics</h2>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" tabindex="-1"></a><span class="fu">mandala_relationship_diagnostics</span>(GRM[<span class="fu">levels</span>(met<span class="sc">$</span>geno), <span class="fu">levels</span>(met<span class="sc">$</span>geno)])</span>
+<span id="cb10-2"><a href="#cb10-2" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb10-3"><a href="#cb10-3" tabindex="-1"></a><span class="co">#&gt; Mandala relationship-matrix diagnostics</span></span>
+<span id="cb10-4"><a href="#cb10-4" tabindex="-1"></a><span class="co">#&gt;   Matrix             : Relationship matrix </span></span>
+<span id="cb10-5"><a href="#cb10-5" tabindex="-1"></a><span class="co">#&gt;   Size               : 50 x 50 </span></span>
+<span id="cb10-6"><a href="#cb10-6" tabindex="-1"></a><span class="co">#&gt;   Diagonal           : min 0.97275 | mean 1.00912 | max 1.05171 </span></span>
+<span id="cb10-7"><a href="#cb10-7" tabindex="-1"></a><span class="co">#&gt;   Off-diagonal       : min 0.09397 | mean 0.28709 | max 0.7491 </span></span>
+<span id="cb10-8"><a href="#cb10-8" tabindex="-1"></a><span class="co">#&gt;   Diagonal flags     : 0 outside [0.8, 1.2]</span></span>
+<span id="cb10-9"><a href="#cb10-9" tabindex="-1"></a><span class="co">#&gt;   Duplicate flags    : 0 pairs with standardized relationship &gt; 0.95</span></span></code></pre></div>
+</div>
+<div id="recommended-benchmark-workflow" class="section level2">
+<h2>Recommended Benchmark Workflow</h2>
+<p>For publication-style genomic prediction comparisons, use
+genotype-level means as the response, not raw plot-level observations. A
+clean benchmark loop is:</p>
+<ol style="list-style-type: decimal">
+<li>estimate genotype BLUE means;</li>
+<li>fit GBLUP using those means;</li>
+<li>run cross-validation by masking genotype means;</li>
+<li>report prediction accuracy, runtime, and GEBV correlations.</li>
+</ol>
+<p>Mandala’s comparison scripts follow this structure.</p>
+</div>
+<div id="selected-literature" class="section level2">
+<h2>Selected Literature</h2>
+<p>Genomic prediction uses dense marker information to predict genetic
+merit through genomic relationships or marker effects. The examples
+above emphasize GBLUP-style modeling through a GRM, which is closely
+related to ridge-regression and genomic best linear unbiased prediction.
+Genotype-holdout cross-validation is commonly used to estimate empirical
+prediction ability.</p>
+<ul>
+<li>Meuwissen, T. H. E., Hayes, B. J. and Goddard, M. E. (2001).
+Prediction of total genetic value using genome-wide dense marker maps.
+<em>Genetics</em>, 157, 1819-1829.</li>
+<li>VanRaden, P. M. (2008). Efficient methods to compute genomic
+predictions. <em>Journal of Dairy Science</em>, 91, 4414-4423.</li>
+<li>Habier, D., Fernando, R. L. and Dekkers, J. C. M. (2007). The impact
+of genetic relationship information on genome-assisted breeding values.
+<em>Genetics</em>, 177, 2389-2397.</li>
+<li>de los Campos, G., Hickey, J. M., Pong-Wong, R., Daetwyler, H. D.
+and Calus, M. P. L. (2013). Whole-genome regression and prediction
+methods applied to plant and animal breeding. <em>Genetics</em>, 193,
+327-345.</li>
+<li>Burgueño, J., de los Campos, G., Weigel, K. and Crossa, J. (2012).
+Genomic prediction of breeding values when modeling genotype by
+environment interaction using pedigree and dense molecular markers.
+<em>Crop Science</em>, 52, 707-719.</li>
+</ul>
+</div>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

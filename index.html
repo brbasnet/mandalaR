@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Mandala Documentation</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: #1f2933;
+      --muted: #52606d;
+      --line: #d9e2ec;
+      --accent: #0f766e;
+      --bg: #f8fafc;
+      --panel: #ffffff;
+    }
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: var(--ink);
+      background: var(--bg);
+      line-height: 1.55;
+    }
+    main {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 48px 24px 64px;
+    }
+    h1 {
+      margin: 0 0 12px;
+      font-size: 42px;
+      line-height: 1.1;
+      letter-spacing: 0;
+    }
+    h2 {
+      margin-top: 36px;
+      font-size: 22px;
+    }
+    p {
+      max-width: 760px;
+      color: var(--muted);
+      font-size: 17px;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 14px;
+      margin-top: 20px;
+    }
+    a.card {
+      display: block;
+      padding: 18px 18px 16px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--panel);
+      color: var(--ink);
+      text-decoration: none;
+    }
+    a.card:hover {
+      border-color: var(--accent);
+      box-shadow: 0 8px 24px rgba(15, 118, 110, 0.08);
+    }
+    .title {
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+    .desc {
+      color: var(--muted);
+      font-size: 14px;
+    }
+    .note {
+      margin-top: 36px;
+      padding-top: 18px;
+      border-top: 1px solid var(--line);
+      font-size: 14px;
+      color: var(--muted);
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>Mandala Documentation</h1>
+    <p>
+      Mandala is an R mixed-model framework for plant breeding and quantitative
+      genetics, with workflows for trial analysis, genomic prediction, spatial
+      modeling, stage-wise analysis, and advanced variance structures.
+    </p>
+
+    <h2>Vignettes</h2>
+    <div class="grid">
+      <a class="card" href="vignettes/01-introduction-to-mandala.html">
+        <div class="title">Introduction to Mandala</div>
+        <div class="desc">Core syntax, model fitting, summaries, fixed tests, prediction, and diagnostics.</div>
+      </a>
+      <a class="card" href="vignettes/02-single-stage-to-multi-stage-trial-analysis.html">
+        <div class="title">Single-Stage to Multi-Stage Analysis</div>
+        <div class="desc">Single-stage MET analysis, first-stage environment analyses, and second-stage synthesis.</div>
+      </a>
+      <a class="card" href="vignettes/03-genomic-prediction.html">
+        <div class="title">Genomic Prediction</div>
+        <div class="desc">Genomic relationship models, tested and untested genotype prediction, and cross-validation.</div>
+      </a>
+      <a class="card" href="vignettes/04-spatial-analysis.html">
+        <div class="title">Spatial Analysis</div>
+        <div class="desc">Row-column and spatial residual models for field trial analysis.</div>
+      </a>
+      <a class="card" href="vignettes/05-advanced-variance-structures.html">
+        <div class="title">Advanced Variance Structures</div>
+        <div class="desc">FA, US, genomic, nested, and residual covariance structures.</div>
+      </a>
+      <a class="card" href="mandala_package_comparison.html">
+        <div class="title">Package Comparison</div>
+        <div class="desc">Positioning Mandala relative to common R breeding-analysis packages.</div>
+      </a>
+    </div>
+
+    <p class="note">
+      This repository contains public documentation only. Private development
+      source code is maintained separately.
+    </p>
+  </main>
+</body>
+</html>
+

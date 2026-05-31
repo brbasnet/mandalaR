@@ -1,0 +1,250 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Mandala Package Comparison</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: #1f2933;
+      --muted: #52606d;
+      --line: #d9e2ec;
+      --header: #f0f4f8;
+      --accent: #0b7285;
+      --bg: #ffffff;
+    }
+    body {
+      margin: 0;
+      padding: 32px;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: var(--ink);
+      background: var(--bg);
+      line-height: 1.45;
+    }
+    main {
+      max-width: 1180px;
+      margin: 0 auto;
+    }
+    h1 {
+      margin: 0 0 8px;
+      font-size: 28px;
+      letter-spacing: 0;
+    }
+    p {
+      margin: 0 0 16px;
+      max-width: 900px;
+      color: var(--muted);
+    }
+    .legend {
+      margin: 20px 0;
+      padding: 12px 14px;
+      border: 1px solid var(--line);
+      background: #fbfcfd;
+      border-radius: 6px;
+      color: var(--ink);
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+      border: 1px solid var(--line);
+    }
+    th,
+    td {
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--line);
+      border-right: 1px solid var(--line);
+      vertical-align: middle;
+    }
+    th {
+      background: var(--header);
+      text-align: left;
+      font-weight: 650;
+    }
+    th:not(:first-child),
+    td:not(:first-child) {
+      text-align: center;
+      white-space: nowrap;
+    }
+    tr:last-child td {
+      border-bottom: 0;
+    }
+    th:last-child,
+    td:last-child {
+      border-right: 0;
+    }
+    .stars {
+      color: var(--accent);
+      font-size: 16px;
+      letter-spacing: 1px;
+    }
+    .note {
+      margin-top: 18px;
+      font-size: 13px;
+      color: var(--muted);
+    }
+  </style>
+</head>
+<body>
+<main>
+  <h1>Mandala Compared With Common R Breeding and Genomic Prediction Packages</h1>
+  <p>
+    The ratings summarize practical strengths for crop breeding workflows,
+    including trial analysis, genomic prediction, usability, speed, memory
+    behavior, and end-to-end analysis support. Ratings are qualitative and
+    intended for positioning rather than formal benchmarking.
+  </p>
+
+  <div class="legend">
+    <strong>Rating scale:</strong>
+    <span class="stars">★★★</span> strong,
+    <span class="stars">★★</span> moderate/usable,
+    <span class="stars">★</span> limited or not the primary purpose.
+  </div>
+
+  <table aria-label="Package comparison table">
+    <thead>
+      <tr>
+        <th>Criterion</th>
+        <th>Mandala</th>
+        <th>sommer</th>
+        <th>rrBLUP</th>
+        <th>lme/nlme/lme4</th>
+        <th>BGLR</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>General breeding experiment analysis</td>
+        <td class="stars">★★★</td>
+        <td class="stars">★★</td>
+        <td class="stars">★</td>
+        <td class="stars">★★</td>
+        <td class="stars">★</td>
+      </tr>
+      <tr>
+        <td>Single-site trial models</td>
+        <td class="stars">★★★</td>
+        <td class="stars">★★</td>
+        <td class="stars">★</td>
+        <td class="stars">★★</td>
+        <td class="stars">★</td>
+      </tr>
+      <tr>
+        <td>MET analysis</td>
+        <td class="stars">★★★</td>
+        <td class="stars">★★</td>
+        <td class="stars">★</td>
+        <td class="stars">★</td>
+        <td class="stars">★★</td>
+      </tr>
+      <tr>
+        <td>Spatial / row-column analysis</td>
+        <td class="stars">★★★</td>
+        <td class="stars">★★</td>
+        <td class="stars">★</td>
+        <td class="stars">★★</td>
+        <td class="stars">★</td>
+      </tr>
+      <tr>
+        <td>Advanced variance structures</td>
+        <td class="stars">★★</td>
+        <td class="stars">★★</td>
+        <td class="stars">★</td>
+        <td class="stars">★★</td>
+        <td class="stars">★★</td>
+      </tr>
+      <tr>
+        <td>Genomic prediction</td>
+        <td class="stars">★★★</td>
+        <td class="stars">★★★</td>
+        <td class="stars">★★★</td>
+        <td class="stars">★</td>
+        <td class="stars">★★★</td>
+      </tr>
+      <tr>
+        <td>Genomic + field-design integration</td>
+        <td class="stars">★★★</td>
+        <td class="stars">★★</td>
+        <td class="stars">★</td>
+        <td class="stars">★</td>
+        <td class="stars">★★</td>
+      </tr>
+      <tr>
+        <td>Multi-trait / multivariate capacity</td>
+        <td class="stars">★</td>
+        <td class="stars">★★★</td>
+        <td class="stars">★</td>
+        <td class="stars">★★</td>
+        <td class="stars">★★★</td>
+      </tr>
+      <tr>
+        <td>Speed for routine breeding workflows</td>
+        <td class="stars">★★★</td>
+        <td class="stars">★★</td>
+        <td class="stars">★★★</td>
+        <td class="stars">★★</td>
+        <td class="stars">★★</td>
+      </tr>
+      <tr>
+        <td>Memory-safe large model behavior</td>
+        <td class="stars">★★★</td>
+        <td class="stars">★★</td>
+        <td class="stars">★★</td>
+        <td class="stars">★★</td>
+        <td class="stars">★★</td>
+      </tr>
+      <tr>
+        <td>Efficiency optimization potential</td>
+        <td class="stars">★★★</td>
+        <td class="stars">★★</td>
+        <td class="stars">★★</td>
+        <td class="stars">★</td>
+        <td class="stars">★★</td>
+      </tr>
+      <tr>
+        <td>Breeder friendliness</td>
+        <td class="stars">★★★</td>
+        <td class="stars">★★</td>
+        <td class="stars">★★</td>
+        <td class="stars">★</td>
+        <td class="stars">★★</td>
+      </tr>
+      <tr>
+        <td>End-to-end breeding pipeline</td>
+        <td class="stars">★★★</td>
+        <td class="stars">★★</td>
+        <td class="stars">★</td>
+        <td class="stars">★</td>
+        <td class="stars">★★</td>
+      </tr>
+      <tr>
+        <td>Prediction API and SEs</td>
+        <td class="stars">★★★</td>
+        <td class="stars">★★</td>
+        <td class="stars">★</td>
+        <td class="stars">★</td>
+        <td class="stars">★★</td>
+      </tr>
+      <tr>
+        <td>Teaching / reproducible workflow</td>
+        <td class="stars">★★★</td>
+        <td class="stars">★★</td>
+        <td class="stars">★★</td>
+        <td class="stars">★★</td>
+        <td class="stars">★★</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p class="note">
+    Interpretation: Mandala is strongest as a fast, breeder-friendly,
+    end-to-end framework for crop trial analysis, MET modeling, genomic
+    prediction integration, prediction SEs, fixed-effect tests, diagnostics,
+    and reproducible workflows. Its multivariate functionality should be
+    treated as early-stage relative to packages with mature multi-trait engines.
+  </p>
+</main>
+</body>
+</html>
