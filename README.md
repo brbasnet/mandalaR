@@ -9,15 +9,22 @@ for Mandala v2.0 is maintained separately.
 
 ## Documentation
 
-Start here:
+Rendered documentation should be viewed through the GitHub Pages site:
 
-- [Mandala documentation home](index.html)
-- [Introduction to Mandala](vignettes/01-introduction-to-mandala.html)
-- [Single-Stage to Multi-Stage Trial Analysis](vignettes/02-single-stage-to-multi-stage-trial-analysis.html)
-- [Genomic Prediction](vignettes/03-genomic-prediction.html)
-- [Spatial Analysis](vignettes/04-spatial-analysis.html)
-- [Advanced Variance Structures](vignettes/05-advanced-variance-structures.html)
-- [Mandala Package Comparison](mandala_package_comparison.html)
+<https://brbasnet.github.io/mandalaR/>
+
+Direct links:
+
+- [Mandala documentation home](https://brbasnet.github.io/mandalaR/)
+- [Introduction to Mandala](https://brbasnet.github.io/mandalaR/vignettes/01-introduction-to-mandala.html)
+- [Single-Stage to Multi-Stage Trial Analysis](https://brbasnet.github.io/mandalaR/vignettes/02-single-stage-to-multi-stage-trial-analysis.html)
+- [Genomic Prediction](https://brbasnet.github.io/mandalaR/vignettes/03-genomic-prediction.html)
+- [Spatial Analysis](https://brbasnet.github.io/mandalaR/vignettes/04-spatial-analysis.html)
+- [Advanced Variance Structures](https://brbasnet.github.io/mandalaR/vignettes/05-advanced-variance-structures.html)
+- [Mandala Package Comparison](https://brbasnet.github.io/mandalaR/mandala_package_comparison.html)
+
+Note: clicking `.html` files inside the GitHub repository file browser shows
+the HTML source code. Use the GitHub Pages links above to view rendered pages.
 
 ## Repository Scope
 
@@ -56,4 +63,3 @@ Then open:
 ```text
 http://localhost:8000
 ```
-
