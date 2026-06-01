@@ -37,14 +37,17 @@ current public documentation.
 
 ## Current Development Status
 
-Mandala v2.0 is an active development package. The current implementation
-includes an MME-based AI-REML engine, selected prediction standard errors for
-large models, selected fixed-effect tests, genomic prediction utilities, spatial
+Mandala is an active development package. The current implementation includes
+an MME-based AI-REML engine, selected prediction standard errors for large
+models, selected fixed-effect tests, genomic prediction utilities, spatial
 diagnostics, and stage-wise analysis tools.
 
 The package is still being refined for public release. Documentation in this
-repository should therefore be viewed as a transparent development preview
-rather than a final CRAN release manual.
+repository should therefore be viewed as a development preview rather than a
+final release manual.
+
+Installation instructions will be added when a public binary or approved
+distribution channel is available.
 
 ## Documentation
 
@@ -90,12 +93,11 @@ include:
 
 It should not include:
 
-- private Mandala source code
 - unreleased implementation scripts
-- private benchmark data
 - internal development archives
 
-The private development source code for Mandala v2.0 is maintained separately.
+Additional project information will be shared through
+[Listo Agriculture](https://listoagriculture.com/).
 
 ## Local Preview
 
