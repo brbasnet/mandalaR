@@ -1,6 +1,6 @@
 # mandalaR
 
-Public-facing documentation for **Mandala**, an R mixed-model framework for
+Comprehensive documentation for **Mandala**, an R mixed-model framework for
 plant breeding and quantitative genetics.
 
 ## About Mandala
